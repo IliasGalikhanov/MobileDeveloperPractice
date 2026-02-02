@@ -2,32 +2,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:background="@color/main_background"
+    android:padding="24dp"
     android:gravity="center">
 
     <EditText android:id="@+id/amountInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Сумма (тенге)"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:backgroundTint="@color/button_color"
+        android:textColorHint="#95A5A6" />
 
     <EditText android:id="@+id/discountInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Скидка (%)"
-        android:inputType="number" />
+        android:inputType="number"
+        android:backgroundTint="@color/button_color"
+        android:textColorHint="#95A5A6" />
 
     <Button android:id="@+id/calcButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Рассчитать"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/button_color"
+        android:textColor="@android:color/white" />
 
     <TextView android:id="@+id/resultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        android:textColor="@color/result_text"
+        android:textStyle="bold" />
 
     <TextView android:id="@+id/errorText"
         android:layout_width="wrap_content"
