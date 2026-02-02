@@ -1,0 +1,54 @@
+package com.example.catalogapp
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.catalogapp.databinding.ActivityMainBinding
+
+/**
+ * Главная Activity приложения с NavHost
+ */
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupNavigation()
+    }
+
+    /**
+     * Настройка навигации
+     */
+    private fun setupNavigation() {
+        // Получаем NavHostFragment
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        
+        navController = navHostFragment.navController
+        
+        // Настройка AppBarConfiguration для определения top-level destinations
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.catalogFragment) // CatalogFragment - стартовый экран без кнопки назад
+        )
+        
+        // Настройка ActionBar с NavController
+        setupActionBarWithNavController(navController, appBarConfiguration)
+    }
+
+    /**
+     * Обработка нажатия кнопки "Назад" в ActionBar
+     */
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+}

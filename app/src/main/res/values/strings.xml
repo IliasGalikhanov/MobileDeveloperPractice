@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Каталог товаров</string>
+    
+    <!-- Catalog Screen -->
+    <string name="catalog_title">Каталог товаров</string>
+    <string name="select_item">Выберите товар из списка</string>
+    
+    <!-- Details Screen -->
+    <string name="price_label">Цена:</string>
+    <string name="description_label">Описание:</string>
+    <string name="add_to_favorite">☆ Добавить в избранное</string>
+    <string name="remove_from_favorite">★ Убрать из избранного</string>
+    <string name="back_to_catalog">← Вернуться к каталогу</string>
+    
+    <!-- Content Descriptions -->
+    <string name="favorite_icon">В избранном</string>
+    <string name="open_details">Открыть детали</string>
 </resources>

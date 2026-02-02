@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/catalogFragment">
+
+    <!-- Фрагмент списка каталога -->
+    <fragment
+        android:id="@+id/catalogFragment"
+        android:name="com.example.catalogapp.ui.fragments.CatalogFragment"
+        android:label="Каталог товаров"
+        tools:layout="@layout/fragment_catalog">
+        
+        <!-- Действие навигации к деталям -->
+        <action
+            android:id="@+id/action_catalog_to_details"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+    <!-- Фрагмент деталей товара -->
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.catalogapp.ui.fragments.DetailsFragment"
+        android:label="Детали товара"
+        tools:layout="@layout/fragment_details">
+        
+        <!-- Аргумент для передачи ID товара через Safe Args -->
+        <argument
+            android:name="itemId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+
+</navigation>
