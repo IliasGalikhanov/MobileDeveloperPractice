@@ -6,7 +6,6 @@ import com.example.myapplication.model.Dice
 
 class DiceViewModel : ViewModel() {
     private val dice = Dice()
-    // LiveData — это данные, на которые будет "подписан" экран
     val currentRoll = MutableLiveData<Int>()
 
     fun rollDice() {

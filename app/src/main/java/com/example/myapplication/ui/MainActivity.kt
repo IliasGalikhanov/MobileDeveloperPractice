@@ -5,7 +5,6 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-// ЗАМЕНИ НА СВОЙ ПАКЕТ + .R (это исправит ошибку из скриншота)
 import com.example.myapplication.R
 import com.example.myapplication.viewmodel.DiceViewModel
 
@@ -20,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         val rollButton: Button = findViewById(R.id.rollButton)
         val diceImage: ImageView = findViewById(R.id.diceImage)
 
-        // Следим за изменениями во ViewModel
         viewModel.currentRoll.observe(this) { number ->
             val drawableResource = when (number) {
                 1 -> R.drawable.dice_1
