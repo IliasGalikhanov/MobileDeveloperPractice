@@ -19,7 +19,7 @@ class CatalogAdapter(
         fun bind(item: CatalogItem) {
             binding.apply {
                 itemTitle.text = item.title
-                itemPrice.text = "${item.price.toInt()} ₽"
+                itemPrice.text = "${item.price.toInt()} тг"
 
                 favoriteIcon.visibility = if (item.isFavorite) {
                     android.view.View.VISIBLE
