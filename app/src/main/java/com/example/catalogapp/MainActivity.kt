@@ -8,9 +8,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.catalogapp.databinding.ActivityMainBinding
 
-/**
- * Главная Activity приложения с NavHost
- */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -23,31 +20,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+
         setupNavigation()
     }
 
-    /**
-     * Настройка навигации
-     */
     private fun setupNavigation() {
-        // Получаем NavHostFragment
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        
+
         navController = navHostFragment.navController
-        
-        // Настройка AppBarConfiguration для определения top-level destinations
+
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.catalogFragment) // CatalogFragment - стартовый экран без кнопки назад
+            setOf(R.id.catalogFragment)
         )
-        
-        // Настройка ActionBar с NavController
+
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
-    /**
-     * Обработка нажатия кнопки "Назад" в ActionBar
-     */
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
