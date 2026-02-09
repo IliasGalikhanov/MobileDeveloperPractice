@@ -1,36 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">User Profile</string>
-    
-    <!-- Profile Screen -->
-    <string name="profile_title">Профиль</string>
-    <string name="edit_profile">Редактировать профиль</string>
-    <string name="settings">Настройки</string>
-    <string name="logout">Выйти</string>
-    
-    <!-- Statistics -->
-    <string name="posts">Публикации</string>
-    <string name="followers">Подписчики</string>
-    <string name="following">Подписки</string>
-    
-    <!-- User Info -->
-    <string name="about">О себе</string>
-    <string name="member_since">Участник с %s</string>
-    
-    <!-- Dialogs -->
-    <string name="logout_title">Выход из аккаунта</string>
-    <string name="logout_message">Вы действительно хотите выйти?</string>
-    <string name="logout_confirm">Выйти</string>
-    <string name="cancel">Отмена</string>
-    <string name="ok">OK</string>
-    
-    <!-- Messages -->
-    <string name="logout_success">Вы вышли из аккаунта</string>
-    <string name="edit_coming_soon">Функция редактирования профиля будет доступна в следующей версии.</string>
-    
-    <!-- Content Descriptions -->
-    <string name="avatar_description">Аватар пользователя</string>
-    <string name="phone_icon">Телефон</string>
-    <string name="location_icon">Местоположение</string>
-    <string name="calendar_icon">Дата регистрации</string>
+    <string name="app_name">Course Catalog</string>
+    <string name="courses_count">Найдено курсов: %d</string>
+    <string name="filter_price">Цена</string>
+    <string name="filter_rating">Рейтинг</string>
+    <string name="reset_filters">Сброс</string>
+    <string name="course_details">Информация о курсе</string>
+    <string name="enroll">Записаться</string>
+    <string name="close">Закрыть</string>
+    <string name="enrolled_success">Вы записались на курс: %s</string>
+    <string name="empty_list">Курсы не найдены</string>
 </resources>

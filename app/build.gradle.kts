@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.userprofile"
+    namespace = "com.example.coursecatalog"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.userprofile"
-        minSdk = 26
+        applicationId = "com.example.coursecatalog"
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -28,12 +28,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -51,6 +51,9 @@ dependencies {
     
     // ConstraintLayout
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     
     // Activity KTX
     implementation("androidx.activity:activity-ktx:1.8.2")
