@@ -5,31 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.coursecatalog.model.Course
 
-/**
- * ViewModel для управления списком курсов
- * Отделяет UI логику от бизнес-логики
- */
 class CourseViewModel : ViewModel() {
 
-    // Приватная изменяемая LiveData
     private val _courses = MutableLiveData<List<Course>>()
-    
-    // Публичная неизменяемая LiveData для наблюдения
     val courses: LiveData<List<Course>> = _courses
 
-    // Выбранный курс
     private val _selectedCourse = MutableLiveData<Course?>()
     val selectedCourse: LiveData<Course?> = _selectedCourse
 
     init {
-        // Загрузка тестовых данных
         loadCourses()
     }
 
-    /**
-     * Загрузка списка курсов
-     * В реальном приложении - загрузка из сети или базы данных
-     */
     private fun loadCourses() {
         val courseList = listOf(
             Course(
@@ -157,31 +144,19 @@ class CourseViewModel : ViewModel() {
         _courses.value = courseList
     }
 
-    /**
-     * Выбор курса при клике
-     */
     fun selectCourse(course: Course) {
         _selectedCourse.value = course
     }
 
-    /**
-     * Сброс выбранного курса
-     */
     fun clearSelection() {
         _selectedCourse.value = null
     }
 
-    /**
-     * Фильтрация курсов по рейтингу
-     */
     fun filterByRating(minRating: Float) {
         val allCourses = _courses.value ?: return
         _courses.value = allCourses.filter { it.rating >= minRating }
     }
 
-    /**
-     * Сортировка курсов по цене
-     */
     fun sortByPrice(ascending: Boolean = true) {
         val sortedCourses = if (ascending) {
             _courses.value?.sortedBy { it.price }
@@ -191,9 +166,6 @@ class CourseViewModel : ViewModel() {
         _courses.value = sortedCourses
     }
 
-    /**
-     * Сброс фильтров и сортировки
-     */
     fun resetFilters() {
         loadCourses()
     }

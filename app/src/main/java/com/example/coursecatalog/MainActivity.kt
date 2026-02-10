@@ -11,10 +11,6 @@ import com.example.coursecatalog.model.Course
 import com.example.coursecatalog.viewmodel.CourseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-/**
- * Главная Activity приложения с каталогом курсов
- * Демонстрирует работу RecyclerView, Adapter и ViewHolder
- */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -33,9 +29,6 @@ class MainActivity : AppCompatActivity() {
         setupFilters()
     }
 
-    /**
-     * Настройка Toolbar
-     */
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
@@ -43,46 +36,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Настройка RecyclerView
-     */
     private fun setupRecyclerView() {
-        // Создание адаптера с обработчиком клика
         courseAdapter = CourseAdapter { course ->
             onCourseClick(course)
         }
 
         binding.recyclerView.apply {
-            // Установка LayoutManager
-            // LinearLayoutManager отображает элементы вертикально
             layoutManager = LinearLayoutManager(this@MainActivity)
-            
-            // Установка адаптера
             adapter = courseAdapter
-            
-            // Оптимизация производительности
-            // Используется когда размер RecyclerView не зависит от содержимого
             setHasFixedSize(true)
-            
-            // Добавление разделителей между элементами (опционально)
-            // addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
 
-    /**
-     * Подписка на LiveData из ViewModel
-     */
     private fun setupObservers() {
-        // Наблюдение за списком курсов
         viewModel.courses.observe(this) { courses ->
-            // Обновление списка в адаптере
             courseAdapter.submitList(courses)
-            
-            // Обновление счётчика курсов
             binding.tvCoursesCount.text = "Найдено курсов: ${courses.size}"
         }
 
-        // Наблюдение за выбранным курсом
         viewModel.selectedCourse.observe(this) { course ->
             course?.let {
                 showCourseDetails(it)
@@ -91,22 +62,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Настройка фильтров и сортировки
-     */
     private fun setupFilters() {
         binding.apply {
-            // Кнопка сортировки по цене
             btnSortPrice.setOnClickListener {
                 showSortDialog()
             }
 
-            // Кнопка фильтрации по рейтингу
             btnFilterRating.setOnClickListener {
                 showFilterDialog()
             }
 
-            // Кнопка сброса фильтров
             btnResetFilters.setOnClickListener {
                 viewModel.resetFilters()
                 Toast.makeText(
@@ -118,16 +83,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Обработка клика по курсу
-     */
     private fun onCourseClick(course: Course) {
         viewModel.selectCourse(course)
     }
 
-    /**
-     * Отображение детальной информации о курсе
-     */
     private fun showCourseDetails(course: Course) {
         val message = """
             📚 ${course.title}
@@ -155,9 +114,6 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    /**
-     * Диалог выбора сортировки
-     */
     private fun showSortDialog() {
         val options = arrayOf(
             "По возрастанию цены",
@@ -181,9 +137,6 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    /**
-     * Диалог выбора фильтра по рейтингу
-     */
     private fun showFilterDialog() {
         val options = arrayOf(
             "Все курсы",
