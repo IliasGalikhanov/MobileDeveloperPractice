@@ -89,13 +89,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun showCourseDetails(course: Course) {
         val message = """
-            📚 ${course.title}
+            ${course.title}
             
-            👨‍🏫 ${course.instructor}
-            ⏱️ Длительность: ${course.duration}
-            💰 Цена: ${course.price.toInt()} тг
-            ⭐ Рейтинг: ${course.rating}/5.0
-            👥 Студентов: ${course.studentsCount}
+            ${course.instructor}
+            Длительность: ${course.duration}
+            Цена: ${course.price.toInt()} тг
+            Рейтинг: ${course.rating}/5.0
+            Студентов: ${course.studentsCount}
             
             ${course.description}
         """.trimIndent()
