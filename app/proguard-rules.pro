@@ -1,4 +1,5 @@
-# Keep data classes
--keep class com.example.coursecatalog.model.** { *; }
-# Keep ViewModel
--keep class com.example.coursecatalog.viewmodel.** { *; }
+# Keep model classes
+-keep class com.example.coursemanager.model.** { *; }
+
+# Keep ViewModel classes
+-keep class com.example.coursemanager.viewmodel.** { *; }
