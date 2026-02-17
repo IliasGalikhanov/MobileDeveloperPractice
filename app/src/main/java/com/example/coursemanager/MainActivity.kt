@@ -163,7 +163,6 @@ class MainActivity : AppCompatActivity() {
             .setTitle(course.title)
             .setMessage(message)
             .setPositiveButton(R.string.enroll) { _, _ ->
-                // Демонстрация обновления рейтинга
                 val newRating = (course.rating + 0.1f).coerceAtMost(5.0f)
                 viewModel.updateCourseRating(course.id, newRating)
                 showSnackbar(getString(R.string.enrolled_success))
@@ -252,7 +251,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         return Course(
-            id = existingId ?: "",
+            id = existingId ?: java.util.UUID.randomUUID().toString(),
             title = title,
             description = description,
             instructor = instructor,
