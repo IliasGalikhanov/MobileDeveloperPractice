@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Название курса -->
         <TextView
             android:id="@+id/tvCourseTitle"
             android:layout_width="0dp"
@@ -31,7 +30,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnEdit" />
 
-        <!-- Кнопка редактирования -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEdit"
             style="@style/Widget.Material3.Button.IconButton"
@@ -43,7 +41,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnDelete" />
 
-        <!-- Кнопка удаления -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDelete"
             style="@style/Widget.Material3.Button.IconButton"
@@ -55,7 +52,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Преподаватель -->
         <TextView
             android:id="@+id/tvInstructor"
             android:layout_width="0dp"
@@ -68,7 +64,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Описание курса -->
         <TextView
             android:id="@+id/tvCourseDescription"
             android:layout_width="0dp"
@@ -83,7 +78,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Разделитель -->
         <View
             android:id="@+id/divider"
             android:layout_width="0dp"
@@ -95,7 +89,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Блок с информацией -->
         <LinearLayout
             android:id="@+id/layoutInfo"
             android:layout_width="0dp"
@@ -106,7 +99,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/layoutPrice">
 
-            <!-- Длительность -->
             <ImageView
                 android:id="@+id/icTime"
                 android:layout_width="16dp"
@@ -126,7 +118,6 @@
                 android:layout_marginEnd="16dp"
                 tools:text="40 часов" />
 
-            <!-- Рейтинг -->
             <androidx.appcompat.widget.AppCompatRatingBar
                 android:id="@+id/ratingBar"
                 style="?android:attr/ratingBarStyleSmall"
@@ -149,7 +140,6 @@
                 android:layout_gravity="center_vertical"
                 tools:text="4.8" />
 
-            <!-- Количество студентов -->
             <ImageView
                 android:id="@+id/icPeople"
                 android:layout_width="16dp"
@@ -171,7 +161,6 @@
 
         </LinearLayout>
 
-        <!-- Блок с ценой -->
         <LinearLayout
             android:id="@+id/layoutPrice"
             android:layout_width="wrap_content"

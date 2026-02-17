@@ -23,7 +23,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Карточка с фильтрами и статистикой -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardFilters"
         android:layout_width="0dp"
@@ -43,7 +42,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Счетчик курсов -->
             <TextView
                 android:id="@+id/tvCoursesCount"
                 android:layout_width="wrap_content"
@@ -54,7 +52,6 @@
                 android:textColor="?attr/colorOnSurface"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Кнопки управления -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,7 +93,6 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- RecyclerView со списком курсов -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -109,7 +105,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_course" />
 
-    <!-- Пустой список -->
     <TextView
         android:id="@+id/layoutEmpty"
         android:layout_width="wrap_content"
@@ -128,7 +123,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible" />
 
-    <!-- FAB для добавления курса -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddCourse"
         android:layout_width="wrap_content"
