@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.coursemanager.R;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -22,7 +23,10 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final CoordinatorLayout rootView;
+  private final ConstraintLayout rootView;
+
+  @NonNull
+  public final AppBarLayout appBarLayout;
 
   @NonNull
   public final MaterialButton btnFilterRating;
@@ -51,13 +55,14 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final TextView tvCoursesCount;
 
-  private ActivityMainBinding(@NonNull CoordinatorLayout rootView,
-      @NonNull MaterialButton btnFilterRating, @NonNull MaterialButton btnResetFilters,
-      @NonNull MaterialButton btnSortPrice, @NonNull MaterialCardView cardFilters,
-      @NonNull FloatingActionButton fabAddCourse, @NonNull TextView layoutEmpty,
-      @NonNull RecyclerView recyclerView, @NonNull MaterialToolbar toolbar,
-      @NonNull TextView tvCoursesCount) {
+  private ActivityMainBinding(@NonNull ConstraintLayout rootView,
+      @NonNull AppBarLayout appBarLayout, @NonNull MaterialButton btnFilterRating,
+      @NonNull MaterialButton btnResetFilters, @NonNull MaterialButton btnSortPrice,
+      @NonNull MaterialCardView cardFilters, @NonNull FloatingActionButton fabAddCourse,
+      @NonNull TextView layoutEmpty, @NonNull RecyclerView recyclerView,
+      @NonNull MaterialToolbar toolbar, @NonNull TextView tvCoursesCount) {
     this.rootView = rootView;
+    this.appBarLayout = appBarLayout;
     this.btnFilterRating = btnFilterRating;
     this.btnResetFilters = btnResetFilters;
     this.btnSortPrice = btnSortPrice;
@@ -71,7 +76,7 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public CoordinatorLayout getRoot() {
+  public ConstraintLayout getRoot() {
     return rootView;
   }
 
@@ -96,6 +101,12 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.appBarLayout;
+      AppBarLayout appBarLayout = ViewBindings.findChildViewById(rootView, id);
+      if (appBarLayout == null) {
+        break missingId;
+      }
+
       id = R.id.btnFilterRating;
       MaterialButton btnFilterRating = ViewBindings.findChildViewById(rootView, id);
       if (btnFilterRating == null) {
@@ -150,9 +161,9 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((CoordinatorLayout) rootView, btnFilterRating, btnResetFilters,
-          btnSortPrice, cardFilters, fabAddCourse, layoutEmpty, recyclerView, toolbar,
-          tvCoursesCount);
+      return new ActivityMainBinding((ConstraintLayout) rootView, appBarLayout, btnFilterRating,
+          btnResetFilters, btnSortPrice, cardFilters, fabAddCourse, layoutEmpty, recyclerView,
+          toolbar, tvCoursesCount);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

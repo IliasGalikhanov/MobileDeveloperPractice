@@ -12,10 +12,6 @@
         "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\layout\\activity_main.xml"
     },
     {
-        "merged": "com.example.coursemanager.app-mergeDebugResources-39:/layout/dialog_add_course.xml",
-        "source": "com.example.coursemanager.app-main-42:/layout/dialog_add_course.xml"
-    },
-    {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-mergeDebugResources-39:\\layout\\item_course.xml",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\layout\\item_course.xml"
     }

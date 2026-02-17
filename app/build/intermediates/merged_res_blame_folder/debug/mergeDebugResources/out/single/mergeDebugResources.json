@@ -28,10 +28,6 @@
         "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\drawable\\ic_sort.xml"
     },
     {
-        "merged": "com.example.coursemanager.app-debug-40:/layout_dialog_add_course.xml.flat",
-        "source": "com.example.coursemanager.app-main-42:/layout/dialog_add_course.xml"
-    },
-    {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-debug-40:\\drawable_ic_empty_list.xml.flat",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\drawable\\ic_empty_list.xml"
     },
