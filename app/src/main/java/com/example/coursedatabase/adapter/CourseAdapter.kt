@@ -8,12 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.databinding.ItemCourseBinding
 
-/**
- * Adapter для отображения курсов из Room Database
- * 
- * ListAdapter + DiffUtil автоматически обновляют список
- * при изменениях в БД
- */
 class CourseAdapter(
     private val onCourseClick: (Course) -> Unit,
     private val onCourseEdit: (Course) -> Unit,
@@ -30,12 +24,10 @@ class CourseAdapter(
                 tvCourseDescription.text = course.description
                 tvInstructor.text = "Преподаватель: ${course.instructor}"
                 tvDuration.text = course.duration
-                tvPrice.text = "${course.price.toInt()} ₽"
+                tvPrice.text = "${course.price.toInt()} ₸"
                 ratingBar.rating = course.rating
                 tvRating.text = course.rating.toString()
                 tvStudents.text = "${course.studentsCount} студентов"
-                
-                // ID курса для отладки
                 tvCourseId.text = "ID: ${course.id}"
                 
                 root.setOnClickListener {
@@ -67,20 +59,12 @@ class CourseAdapter(
         holder.bind(course)
     }
 
-    /**
-     * DiffUtil для сравнения курсов из Room
-     * 
-     * ВАЖНО: Сравниваем по ID (Long), а не String
-     * Room автоматически генерирует Long ID
-     */
     private class CourseDiffCallback : DiffUtil.ItemCallback<Course>() {
         override fun areItemsTheSame(oldItem: Course, newItem: Course): Boolean {
-            // Сравниваем по ID из Room (Long)
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Course, newItem: Course): Boolean {
-            // Data class автоматически сравнивает все поля
             return oldItem == newItem
         }
     }

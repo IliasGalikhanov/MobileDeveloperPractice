@@ -4,30 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Entity класс для таблицы courses в Room Database
- * 
- * @Entity - аннотация Room, указывающая что это таблица БД
- * tableName = "courses" - имя таблицы в SQLite
- * 
- * Каждое поле класса становится колонкой в таблице
- */
 @Entity(tableName = "courses")
 data class Course(
-    /**
-     * @PrimaryKey - первичный ключ таблицы
-     * autoGenerate = true - автоматическая генерация ID при вставке
-     * 
-     * Каждая запись получает уникальный ID автоматически
-     */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     val id: Long = 0,
     
-    /**
-     * @ColumnInfo - настройка колонки
-     * name = "..." - имя колонки в БД (можно отличаться от имени поля)
-     */
     @ColumnInfo(name = "title")
     val title: String,
     
@@ -49,23 +31,16 @@ data class Course(
     @ColumnInfo(name = "students_count")
     val studentsCount: Int,
     
-    /**
-     * Timestamp создания записи
-     * По умолчанию - текущее время
-     */
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()
 ) {
     companion object {
-        /**
-         * Генерирует демонстрационные курсы для первого запуска
-         */
         fun getSampleCourses(): List<Course> {
             return listOf(
                 Course(
                     title = "Android Development с Kotlin",
                     description = "Полный курс разработки Android приложений с нуля",
-                    instructor = "Иван Петров",
+                    instructor = "Асхат Аманжолов",
                     duration = "40 часов",
                     price = 15990.0,
                     rating = 4.8f,
@@ -74,7 +49,7 @@ data class Course(
                 Course(
                     title = "Jetpack Compose",
                     description = "Современный UI toolkit для Android",
-                    instructor = "Мария Сидорова",
+                    instructor = "Айгерим Султанова",
                     duration = "30 часов",
                     price = 12990.0,
                     rating = 4.9f,
@@ -83,7 +58,7 @@ data class Course(
                 Course(
                     title = "Kotlin Coroutines и Flow",
                     description = "Асинхронное программирование в Kotlin",
-                    instructor = "Алексей Смирнов",
+                    instructor = "Бахытжан Назарбаев",
                     duration = "25 часов",
                     price = 9990.0,
                     rating = 4.7f,
@@ -92,7 +67,7 @@ data class Course(
                 Course(
                     title = "MVVM и Clean Architecture",
                     description = "Архитектура Android приложений",
-                    instructor = "Елена Козлова",
+                    instructor = "Динара Касымова",
                     duration = "35 часов",
                     price = 13990.0,
                     rating = 4.6f,
@@ -101,7 +76,7 @@ data class Course(
                 Course(
                     title = "Room Database",
                     description = "Работа с локальной базой данных",
-                    instructor = "Дмитрий Волков",
+                    instructor = "Ербол Жумагулов",
                     duration = "20 часов",
                     price = 7990.0,
                     rating = 4.5f,
@@ -110,7 +85,7 @@ data class Course(
                 Course(
                     title = "Retrofit и REST API",
                     description = "Сетевые запросы в Android",
-                    instructor = "Сергей Новиков",
+                    instructor = "Самат Искаков",
                     duration = "18 часов",
                     price = 6990.0,
                     rating = 4.8f,
@@ -119,7 +94,7 @@ data class Course(
                 Course(
                     title = "Material Design 3",
                     description = "Современный дизайн Android приложений",
-                    instructor = "Ольга Морозова",
+                    instructor = "Гульнара Ахметова",
                     duration = "22 часов",
                     price = 8990.0,
                     rating = 4.7f,
