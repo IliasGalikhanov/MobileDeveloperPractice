@@ -1,44 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Менеджер Курсов</string>
-
-    <string name="courses_count">Найдено курсов: %d</string>
-    <string name="filter_price">Цена</string>
-    <string name="filter_rating">Рейтинг</string>
-    <string name="reset_filters">Сброс</string>
-    <string name="empty_list">Список курсов пуст</string>
-
-    <string name="course_details">Детали курса</string>
-    <string name="enroll">Записаться</string>
-    <string name="close">Закрыть</string>
-    <string name="enrolled_success">Вы успешно записались на курс!</string>
-
+    <string name="app_name">База Данных Курсов</string>
     <string name="add_course">Добавить курс</string>
     <string name="edit_course">Редактировать курс</string>
-    <string name="save">Сохранить</string>
-    <string name="cancel">Отмена</string>
     <string name="delete_course">Удалить курс</string>
-    <string name="delete_confirm">Вы уверены, что хотите удалить этот курс?</string>
+    <string name="delete_confirm">Удалить этот курс из базы данных?</string>
+    <string name="save">Сохранить</string>
     <string name="delete">Удалить</string>
-
-    <string name="error_empty_title">Введите название курса</string>
-    <string name="error_empty_description">Введите описание</string>
-    <string name="error_empty_instructor">Введите имя преподавателя</string>
-    <string name="error_empty_duration">Введите длительность</string>
-    <string name="error_invalid_price">Введите корректную цену</string>
-    <string name="error_invalid_rating">Рейтинг должен быть от 0.0 до 5.0</string>
-    <string name="error_invalid_students">Введите количество студентов</string>
-
-    <string name="course_added">Курс добавлен</string>
-    <string name="course_updated">Курс обновлен</string>
-    <string name="course_deleted">Курс удален</string>
-
-    <string name="sort_by_price">Сортировать по цене</string>
-    <string name="sort_price_asc">По возрастанию цены</string>
-    <string name="sort_price_desc">По убыванию цены</string>
-
-    <string name="filter_by_rating">Фильтр по рейтингу</string>
-    <string name="rating_45_plus">4.5 и выше</string>
-    <string name="rating_47_plus">4.7 и выше</string>
-    <string name="rating_48_plus">4.8 и выше</string>
+    <string name="cancel">Отмена</string>
+    <string name="enroll">Записаться</string>
+    <string name="close">Закрыть</string>
+    <string name="error_empty_title">Введите название</string>
+    <string name="course_added">Курс добавлен в БД</string>
+    <string name="course_updated">Курс обновлен в БД</string>
+    <string name="course_deleted">Курс удален из БД</string>
+    <string name="enrolled_success">Вы записались! Данные сохранены в БД</string>
 </resources>

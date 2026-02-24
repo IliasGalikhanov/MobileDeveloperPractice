@@ -1,725 +1,948 @@
-# Практическая работа №6: DiffUtil и ListAdapter
+# Практическая работа №7: Room Database и CRUD операции
 
 ## 📚 Описание проекта
 
-**Менеджер Курсов** — Android-приложение, демонстрирующее оптимизацию списков с помощью `DiffUtil` и `ListAdapter`.
+**База Данных Курсов** — Android-приложение, демонстрирующее локальное хранение данных с помощью **Room Database** (обертка над SQLite).
 
 ### Ключевые возможности:
-- ✅ **Добавление курсов** — создание новых элементов списка
-- ✅ **Удаление курсов** — удаление с подтверждением
-- ✅ **Редактирование курсов** — обновление данных существующих элементов
-- ✅ **Фильтрация** — по рейтингу (4.5+, 4.7+, 4.8+)
-- ✅ **Сортировка** — по цене (возрастание/убывание)
-- ✅ **DiffUtil** — автоматическое вычисление изменений
-- ✅ **ListAdapter** — оптимизированный адаптер
-- ✅ **Анимации** — плавные переходы при изменениях
+- ✅ **CREATE** — добавление курсов в БД
+- ✅ **READ** — чтение всех курсов с автоматическим обновлением
+- ✅ **UPDATE** — редактирование существующих курсов
+- ✅ **DELETE** — удаление курсов из БД
+- ✅ **Статистика** — количество курсов, средняя цена, всего студентов
+- ✅ **Сохранение после перезапуска** — данные не теряются
+- ✅ **MVVM + Repository** — правильная архитектура
 
 ---
 
-## 🎯 Что такое DiffUtil?
+## 🎯 Что такое Room?
 
 ### Определение
 
-`DiffUtil` — это утилита от Android, которая вычисляет **минимальное количество изменений** между двумя списками и обновляет только измененные элементы.
+**Room** — это библиотека от Google для работы с локальной базой данных SQLite в Android.
 
-### Проблема без DiffUtil
+Room является **ORM (Object-Relational Mapping)** — переводит объекты Kotlin в таблицы SQL.
 
-**БЕЗ DiffUtil (старый подход):**
+### Зачем нужен Room?
 
+**БЕЗ Room (чистый SQLite):**
 ```kotlin
-// Старый список: [A, B, C, D, E]
-// Новый список:  [A, B, X, D, E]  // Изменился только элемент C → X
+// ❌ ПЛОХО: Куча boilerplate кода
+val db = dbHelper.writableDatabase
+val values = ContentValues().apply {
+    put("title", "Kotlin")
+    put("price", 10000)
+}
+val id = db.insert("courses", null, values)
 
-// ❌ ПЛОХО: notifyDataSetChanged()
-adapter.notifyDataSetChanged()
-
-// Что происходит:
-// 1. Перерисовываются ВСЕ элементы (A, B, C, D, E)
-// 2. Нет анимаций
-// 3. Мерцание экрана
-// 4. Потеря состояния (например, позиция прокрутки)
-// 5. Низкая производительность
+// Чтение
+val cursor = db.query("courses", null, null, null, null, null, null)
+while (cursor.moveToNext()) {
+    val title = cursor.getString(cursor.getColumnIndex("title"))
+    // ... много кода
+}
 ```
 
-**С DiffUtil (современный подход):**
-
+**С Room:**
 ```kotlin
-// Старый список: [A, B, C, D, E]
-// Новый список:  [A, B, X, D, E]  // Изменился только элемент C → X
-
-// ✅ ХОРОШО: submitList()
-adapter.submitList(newList)
-
-// Что происходит:
-// 1. DiffUtil сравнивает списки
-// 2. Определяет: только элемент #2 изменился
-// 3. Перерисовывается ТОЛЬКО элемент #2
-// 4. Применяется анимация изменения
-// 5. Остальные элементы остаются нетронутыми
-```
-
-### Как работает DiffUtil
-
-```
-Старый список          Новый список
-┌─────────────┐       ┌─────────────┐
-│ Course(1)   │       │ Course(1)   │  → areItemsTheSame(1,1)=true
-│ price=10000 │       │ price=10000 │     areContentsTheSame=true
-└─────────────┘       └─────────────┘     ✅ НЕ ОБНОВЛЯЕМ
-
-┌─────────────┐       ┌─────────────┐
-│ Course(2)   │       │ Course(2)   │  → areItemsTheSame(2,2)=true
-│ price=15000 │       │ price=20000 │     areContentsTheSame=false
-└─────────────┘       └─────────────┘     🔄 ОБНОВЛЯЕМ!
-
-┌─────────────┐       
-│ Course(3)   │       (удален)         → 🗑️ УДАЛЯЕМ
-│ price=5000  │       
-└─────────────┘       
-
-                      ┌─────────────┐
-                      │ Course(4)   │  → ➕ ДОБАВЛЯЕМ
-                      │ price=8000  │
-                      └─────────────┘
-```
-
----
-
-## 🏗️ Архитектура проекта
-
-### Структура файлов
-
-```
-app/src/main/java/com/example/coursemanager/
-├── model/
-│   └── Course.kt                    # Модель данных (data class)
-├── viewmodel/
-│   └── CourseViewModel.kt           # ViewModel с LiveData
-├── adapter/
-│   └── CourseAdapter.kt             # ListAdapter + DiffUtil
-└── MainActivity.kt                  # UI и взаимодействие
-
-app/src/main/res/
-├── layout/
-│   ├── activity_main.xml            # Главный экран
-│   ├── item_course.xml              # Элемент списка
-│   └── dialog_add_course.xml        # Диалог добавления/редактирования
-├── values/
-│   ├── colors.xml                   # Material Design 3 цвета
-│   ├── strings.xml                  # Строковые ресурсы
-│   └── themes.xml                   # Светлая тема
-└── values-night/
-    └── themes.xml                   # Темная тема
-```
-
----
-
-## 🔧 Реализация DiffUtil
-
-### 1. DiffUtil.ItemCallback в CourseAdapter
-
-**Файл:** `adapter/CourseAdapter.kt`
-
-```kotlin
-private class CourseDiffCallback : DiffUtil.ItemCallback<Course>() {
+// ✅ ХОРОШО: Чистый и простой код
+@Dao
+interface CourseDao {
+    @Insert
+    suspend fun insert(course: Course): Long
     
-    /**
-     * Проверка: это один и тот же элемент?
-     * Сравнивается по уникальному ID
-     */
-    override fun areItemsTheSame(oldItem: Course, newItem: Course): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    /**
-     * Проверка: изменилось ли содержимое?
-     * Вызывается только если areItemsTheSame = true
-     * 
-     * Data class автоматически генерирует equals()
-     */
-    override fun areContentsTheSame(oldItem: Course, newItem: Course): Boolean {
-        return oldItem == newItem
-    }
+    @Query("SELECT * FROM courses")
+    fun getAllCourses(): LiveData<List<Course>>
 }
-```
 
-### Как data class помогает DiffUtil?
-
-```kotlin
-data class Course(
-    val id: String,
-    val title: String,
-    val price: Double,
-    val rating: Float
-)
-
-// Data class автоматически генерирует:
-fun equals(other: Any?): Boolean {
-    if (other !is Course) return false
-    return id == other.id &&
-           title == other.title &&
-           price == other.price &&
-           rating == other.rating
-}
-```
-
-**Пример работы:**
-
-```kotlin
-val old = Course(id="1", title="Kotlin", price=10000.0, rating=4.5f)
-val new = Course(id="1", title="Kotlin", price=15000.0, rating=4.5f)
-
-areItemsTheSame(old, new)     // true  (тот же id)
-areContentsTheSame(old, new)  // false (цена изменилась!)
-// Результат: элемент будет обновлен
+// Использование
+courseDao.insert(course)
+courseDao.getAllCourses() // LiveData автоматически обновляется!
 ```
 
 ---
 
-### 2. ListAdapter
+## 🏗️ Архитектура Room
 
-**Файл:** `adapter/CourseAdapter.kt`
+Room состоит из **3 основных компонентов**:
+
+```
+┌─────────────────────────────────────┐
+│         MainActivity (UI)           │
+│                                     │
+│  - Отображает данные                │
+│  - Реагирует на действия             │
+└──────────────┬──────────────────────┘
+               │
+               ↓ observe()
+┌──────────────────────────────────────┐
+│          ViewModel                   │
+│                                      │
+│  - LiveData<List<Course>>            │
+│  - insert(), update(), delete()      │
+└──────────────┬───────────────────────┘
+               │
+               ↓ вызывает методы
+┌──────────────────────────────────────┐
+│          Repository                  │
+│                                      │
+│  - Прослойка между ViewModel и DAO   │
+│  - Может объединять БД + API         │
+└──────────────┬───────────────────────┘
+               │
+               ↓ делегирует операции
+┌──────────────────────────────────────┐
+│      CourseDao (interface)           │  ← 1️⃣ DAO
+│                                      │
+│  @Query("SELECT * FROM courses")     │
+│  fun getAllCourses(): LiveData<...>  │
+│                                      │
+│  @Insert suspend fun insert(...)     │
+│  @Update suspend fun update(...)     │
+│  @Delete suspend fun delete(...)     │
+└──────────────┬───────────────────────┘
+               │
+               ↓ генерирует SQL
+┌──────────────────────────────────────┐
+│         AppDatabase                  │  ← 2️⃣ Database
+│                                      │
+│  @Database(entities = [Course::class])│
+│  abstract class AppDatabase          │
+│  abstract fun courseDao(): CourseDao │
+└──────────────┬───────────────────────┘
+               │
+               ↓ работает с
+┌──────────────────────────────────────┐
+│      Course (@Entity)                │  ← 3️⃣ Entity
+│                                      │
+│  @PrimaryKey(autoGenerate = true)    │
+│  val id: Long                        │
+│  val title: String                   │
+│  val price: Double                   │
+└──────────────────────────────────────┘
+               │
+               ↓
+┌──────────────────────────────────────┐
+│       SQLite Database                │
+│    (course_database.db)              │
+│                                      │
+│  Таблица: courses                    │
+│  ┌────┬────────┬──────┬──────┐      │
+│  │ id │ title  │price │ ...  │      │
+│  ├────┼────────┼──────┼──────┤      │
+│  │ 1  │ Kotlin │10000 │ ...  │      │
+│  │ 2  │ Compose│15000 │ ...  │      │
+│  └────┴────────┴──────┴──────┘      │
+└──────────────────────────────────────┘
+```
+
+---
+
+## 📋 1. Entity - Модель данных
+
+**Файл:** `data/entity/Course.kt`
 
 ```kotlin
-class CourseAdapter(
-    private val onCourseClick: (Course) -> Unit,
-    private val onCourseEdit: (Course) -> Unit,
-    private val onCourseDelete: (Course) -> Unit
-) : ListAdapter<Course, CourseAdapter.CourseViewHolder>(CourseDiffCallback()) {
-    //  ↑                ↑                                    ↑
-    //  Наследуем    ViewHolder                      DiffUtil callback
-    //  ListAdapter
+@Entity(tableName = "courses")
+data class Course(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val id: Long = 0,
+    
+    @ColumnInfo(name = "title")
+    val title: String,
+    
+    @ColumnInfo(name = "price")
+    val price: Double,
+    
+    // ... остальные поля
+)
+```
 
-    // ViewHolder (хранит view элементы)
-    inner class CourseViewHolder(
-        private val binding: ItemCourseBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+### Аннотации:
+
+| Аннотация | Описание |
+|-----------|----------|
+| `@Entity` | Указывает, что это таблица БД |
+| `@PrimaryKey` | Первичный ключ (уникальный ID) |
+| `autoGenerate = true` | Room автоматически генерирует ID |
+| `@ColumnInfo` | Настройка колонки (имя, тип) |
+
+### Как это превращается в SQL?
+
+```kotlin
+@Entity(tableName = "courses")
+data class Course(
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val title: String,
+    val price: Double
+)
+```
+
+**Room генерирует:**
+```sql
+CREATE TABLE courses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    title TEXT NOT NULL,
+    price REAL NOT NULL
+);
+```
+
+---
+
+## 🔧 2. DAO - Data Access Object
+
+**Файл:** `data/dao/CourseDao.kt`
+
+DAO — это **интерфейс** с методами для работы с БД.
+
+```kotlin
+@Dao
+interface CourseDao {
+    
+    // CREATE
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(course: Course): Long
+    
+    // READ
+    @Query("SELECT * FROM courses ORDER BY created_at DESC")
+    fun getAllCourses(): LiveData<List<Course>>
+    
+    @Query("SELECT * FROM courses WHERE id = :id")
+    suspend fun getCourseById(id: Long): Course?
+    
+    // UPDATE
+    @Update
+    suspend fun update(course: Course): Int
+    
+    @Query("UPDATE courses SET price = :newPrice WHERE id = :courseId")
+    suspend fun updatePrice(courseId: Long, newPrice: Double)
+    
+    // DELETE
+    @Delete
+    suspend fun delete(course: Course): Int
+    
+    @Query("DELETE FROM courses WHERE id = :courseId")
+    suspend fun deleteById(courseId: Long): Int
+}
+```
+
+### Ключевые аннотации:
+
+| Аннотация | SQL | Описание |
+|-----------|-----|----------|
+| `@Insert` | `INSERT INTO courses VALUES (...)` | Вставка записи |
+| `@Update` | `UPDATE courses SET ... WHERE id = ?` | Обновление |
+| `@Delete` | `DELETE FROM courses WHERE id = ?` | Удаление |
+| `@Query` | Любой SQL | Кастомный запрос |
+
+### suspend vs LiveData
+
+**suspend функции:**
+```kotlin
+@Insert
+suspend fun insert(course: Course): Long
+
+// Использование (в корутине):
+viewModelScope.launch {
+    val id = courseDao.insert(course)  // Фоновый поток
+}
+```
+
+**LiveData:**
+```kotlin
+@Query("SELECT * FROM courses")
+fun getAllCourses(): LiveData<List<Course>>
+
+// Использование:
+courseDao.getAllCourses().observe(this) { courses ->
+    // Автоматически обновляется при изменениях в БД!
+}
+```
+
+---
+
+## 🗄️ 3. Database - Главный класс БД
+
+**Файл:** `data/database/AppDatabase.kt`
+
+```kotlin
+@Database(
+    entities = [Course::class],  // Список таблиц
+    version = 1,                 // Версия схемы БД
+    exportSchema = false
+)
+abstract class AppDatabase : RoomDatabase() {
+    
+    abstract fun courseDao(): CourseDao
+    
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
         
-        fun bind(course: Course) {
-            binding.tvCourseTitle.text = course.title
-            binding.tvPrice.text = "${course.price.toInt()} ₽"
-            // ... остальные поля
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "course_database"  // Имя файла БД
+                ).build()
+                INSTANCE = instance
+                instance
+            }
         }
     }
+}
+```
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
-        // Создается редко - только при первой прокрутке
-        val binding = ItemCourseBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return CourseViewHolder(binding)
+### Singleton Pattern
+
+**Зачем?** Гарантирует, что существует только **один экземпляр** БД.
+
+```
+1-й вызов: getDatabase() → создает БД → INSTANCE = db
+2-й вызов: getDatabase() → INSTANCE уже есть → возвращает существующий
+```
+
+**Без Singleton:**
+- Каждый раз создается новая БД
+- Конфликты при записи
+- Утечки памяти
+
+---
+
+## 📦 4. Repository - Прослойка между ViewModel и DAO
+
+**Файл:** `data/repository/CourseRepository.kt`
+
+```kotlin
+class CourseRepository(private val courseDao: CourseDao) {
+    
+    val allCourses: LiveData<List<Course>> = courseDao.getAllCourses()
+    
+    suspend fun insert(course: Course): Long {
+        return courseDao.insert(course)
     }
+    
+    suspend fun update(course: Course): Int {
+        return courseDao.update(course)
+    }
+    
+    suspend fun delete(course: Course): Int {
+        return courseDao.delete(course)
+    }
+}
+```
 
-    override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
-        // Вызывается каждый раз при отображении элемента
-        val course = getItem(position)  // ListAdapter.getItem()
-        holder.bind(course)
+### Зачем нужен Repository?
+
+**БЕЗ Repository:**
+```
+ViewModel → DAO → SQLite
+```
+Проблемы:
+- ViewModel знает о Room
+- Сложно добавить API
+- Сложно тестировать
+
+**С Repository:**
+```
+ViewModel → Repository → (DAO + API + Cache)
+```
+Преимущества:
+- ViewModel не знает об источнике данных
+- Легко добавить API: `Repository → DAO + Retrofit`
+- Легко тестировать (mock Repository)
+- Единое место для логики данных
+
+### Пример с API + БД:
+
+```kotlin
+class CourseRepository(
+    private val courseDao: CourseDao,
+    private val api: CourseApi
+) {
+    // Сначала показываем данные из БД (быстро)
+    val allCourses: LiveData<List<Course>> = courseDao.getAllCourses()
+    
+    // Затем обновляем из API (медленно, но актуально)
+    suspend fun refreshCourses() {
+        try {
+            val freshCourses = api.getCourses()  // Из сети
+            courseDao.insertAll(freshCourses)    // Сохраняем в БД
+        } catch (e: Exception) {
+            // Обработка ошибки
+        }
     }
 }
 ```
 
 ---
 
-### 3. ViewModel с правильным обновлением
+## 🎛️ 5. ViewModel - Управление данными и UI
 
 **Файл:** `viewmodel/CourseViewModel.kt`
 
-⚠️ **КРИТИЧЕСКИ ВАЖНО:** При работе с `DiffUtil` нужно создавать **НОВЫЙ** список!
-
 ```kotlin
-class CourseViewModel : ViewModel() {
+class CourseViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val _courses = MutableLiveData<List<Course>>()
-    val courses: LiveData<List<Course>> = _courses
-
-    // ✅ ПРАВИЛЬНО: Добавление курса
-    fun addCourse(course: Course) {
-        val currentList = _courses.value.orEmpty()
-        val newList = currentList + course  // Создаем НОВЫЙ список
-        _courses.value = newList            // submitList() обнаружит изменения
-    }
-
-    // ✅ ПРАВИЛЬНО: Удаление курса
-    fun deleteCourse(courseId: String) {
-        val currentList = _courses.value.orEmpty()
-        val newList = currentList.filter { it.id != courseId }  // НОВЫЙ список
-        _courses.value = newList
-    }
-
-    // ✅ ПРАВИЛЬНО: Обновление курса
-    fun updateCourse(updatedCourse: Course) {
-        val currentList = _courses.value.orEmpty()
-        val newList = currentList.map { course ->
-            if (course.id == updatedCourse.id) updatedCourse else course
-        }
-        _courses.value = newList
-    }
-
-    // ❌ НЕПРАВИЛЬНО: Изменение существующего списка
-    fun addCourseWrong(course: Course) {
-        val list = _courses.value?.toMutableList() ?: mutableListOf()
-        list.add(course)
-        _courses.value = list  // Это тот же объект! DiffUtil не сработает
-    }
-}
-```
-
-**Почему важно создавать новый список?**
-
-```kotlin
-// Ситуация 1: ❌ НЕПРАВИЛЬНО
-val list = mutableListOf(course1, course2)
-_courses.value = list
-
-list.add(course3)        // Изменяем тот же список
-_courses.value = list    // Тот же объект!
-
-// submitList() получает:
-// oldList = [course1, course2, course3]  // ссылка на list
-// newList = [course1, course2, course3]  // та же ссылка!
-// oldList === newList -> НИЧЕГО НЕ ОБНОВИТСЯ!
-
-// Ситуация 2: ✅ ПРАВИЛЬНО
-val list1 = listOf(course1, course2)
-_courses.value = list1
-
-val list2 = list1 + course3  // Создаем НОВЫЙ список
-_courses.value = list2
-
-// submitList() получает:
-// oldList = [course1, course2]        // ссылка на list1
-// newList = [course1, course2, course3]  // ссылка на list2
-// oldList !== newList -> DiffUtil РАБОТАЕТ!
-```
-
----
-
-### 4. MainActivity: submitList()
-
-**Файл:** `MainActivity.kt`
-
-```kotlin
-class MainActivity : AppCompatActivity() {
+    private val repository: CourseRepository
+    val allCourses: LiveData<List<Course>>
     
-    private val viewModel: CourseViewModel by viewModels()
-    private lateinit var courseAdapter: CourseAdapter
-
-    private fun setupObservers() {
-        viewModel.courses.observe(this) { courses ->
-            // submitList() — ключевой метод ListAdapter
-            // Внутри вызывается DiffUtil для вычисления изменений
-            courseAdapter.submitList(courses)
-            
-            // DiffUtil работает в фоновом потоке!
-            // После вычисления изменений обновляет UI в главном потоке
+    init {
+        val database = AppDatabase.getDatabase(application)
+        val courseDao = database.courseDao()
+        repository = CourseRepository(courseDao)
+        allCourses = repository.allCourses
+    }
+    
+    fun insert(course: Course) {
+        viewModelScope.launch {
+            repository.insert(course)
         }
     }
-
-    private fun showAddCourseDialog() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Добавить курс")
-            .setView(dialogBinding.root)
-            .setPositiveButton("Сохранить") { _, _ ->
-                val course = createCourseFromDialog(dialogBinding)
-                viewModel.addCourse(course)  // ViewModel создаст новый список
-            }
-            .show()
-    }
-}
-```
-
----
-
-## 📊 Сравнение: RecyclerView.Adapter vs ListAdapter
-
-| Характеристика | RecyclerView.Adapter | ListAdapter |
-|----------------|----------------------|-------------|
-| **Обновление списка** | `notifyDataSetChanged()` | `submitList(newList)` |
-| **DiffUtil** | Нужно реализовывать вручную | Встроен |
-| **Производительность** | Низкая (перерисовка всего) | Высокая (только изменения) |
-| **Анимации** | Нужно настраивать | Автоматические |
-| **Код** | Больше boilerplate | Меньше кода |
-| **Многопоточность** | Ручная | Автоматическая |
-
-### Пример кода
-
-**RecyclerView.Adapter:**
-```kotlin
-class OldCourseAdapter : RecyclerView.Adapter<ViewHolder>() {
-    private var courses: List<Course> = emptyList()
-
-    fun updateCourses(newCourses: List<Course>) {
-        courses = newCourses
-        notifyDataSetChanged()  // ❌ Перерисовка всего списка
-    }
-
-    override fun getItemCount() = courses.size
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(courses[position])
-    }
-}
-```
-
-**ListAdapter:**
-```kotlin
-class NewCourseAdapter : ListAdapter<Course, ViewHolder>(CourseDiffCallback()) {
     
-    // Метод updateCourses() не нужен!
-    // Просто вызываем submitList()
+    fun update(course: Course) {
+        viewModelScope.launch {
+            repository.update(course)
+        }
+    }
     
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))  // getItem() из ListAdapter
+    fun delete(course: Course) {
+        viewModelScope.launch {
+            repository.delete(course)
+        }
     }
 }
-
-// Использование:
-adapter.submitList(newCourses)  // ✅ DiffUtil работает автоматически
 ```
 
----
+### viewModelScope
 
-## 🎬 Жизненный цикл обновления с DiffUtil
+**viewModelScope** — корутина, привязанная к ViewModel.
 
-```
-1. ViewModel изменяет данные
-   ↓
-   viewModel.addCourse(course)
-   
-2. ViewModel создает НОВЫЙ список
-   ↓
-   val newList = currentList + course
-   _courses.value = newList
-   
-3. LiveData уведомляет Observer
-   ↓
-   courses.observe { courses ->
-   
-4. Вызывается submitList()
-   ↓
-   adapter.submitList(courses)
-   
-5. ListAdapter запускает DiffUtil в фоновом потоке
-   ↓
-   DiffUtil.calculateDiff(oldList, newList)
-   
-6. DiffUtil вызывает callback методы
-   ↓
-   areItemsTheSame(oldItem, newItem)
-   areContentsTheSame(oldItem, newItem)
-   
-7. DiffUtil вычисляет изменения
-   ↓
-   Результат: добавлен элемент #5
-   
-8. Обновление UI в главном потоке
-   ↓
-   notifyItemInserted(5)
-   
-9. RecyclerView применяет анимацию
-   ↓
-   Элемент #5 плавно появляется
-```
+Автоматически отменяется при уничтожении ViewModel → **нет утечек памяти**.
 
----
-
-## 🚀 Преимущества DiffUtil
-
-### 1. **Производительность**
-- Обновляются только измененные элементы
-- Вычисления в фоновом потоке
-- Нет лишних перерисовок
-
-### 2. **Анимации**
-- Автоматические плавные переходы
-- `notifyItemInserted()` — элемент появляется
-- `notifyItemRemoved()` — элемент исчезает
-- `notifyItemChanged()` — элемент обновляется
-
-### 3. **Меньше кода**
 ```kotlin
-// БЕЗ DiffUtil: ~50 строк кода
-// С DiffUtil: ~10 строк кода
+fun insert(course: Course) {
+    viewModelScope.launch {  // Запускается в фоновом потоке
+        val id = repository.insert(course)
+        println("Вставлен курс с ID: $id")
+    }  // Автоматически отменяется при onCleared()
+}
 ```
-
-### 4. **Стабильность**
-- Сохранение состояния (позиция прокрутки, выделение)
-- Нет мерцания
-- Корректная работа с клавиатурой
 
 ---
 
-## 🧪 Тестирование DiffUtil
+## 🔄 CRUD операции в действии
 
-### Сценарии тестирования:
+### CREATE - Добавление курса
 
-1. **Добавление элемента**
-   - Нажать FAB → Заполнить форму → Сохранить
-   - ✅ Элемент появляется внизу списка с анимацией
+**Поток данных:**
+```
+User → FAB click
+  ↓
+MainActivity → showAddCourseDialog()
+  ↓
+Dialog → Save button
+  ↓
+viewModel.insert(course)
+  ↓
+viewModelScope.launch {
+  ↓
+  repository.insert(course)
+    ↓
+    courseDao.insert(course)
+      ↓
+      Room → SQL: INSERT INTO courses VALUES (...)
+        ↓
+        SQLite Database ← Данные сохранены
+      ↓
+    LiveData автоматически уведомляет Observer
+  ↓
+}
+  ↓
+MainActivity.allCourses.observe { courses ->
+  ↓
+  adapter.submitList(courses)  // DiffUtil обновляет UI
+    ↓
+    RecyclerView ← Новый курс появляется
+}
+```
 
-2. **Удаление элемента**
-   - Нажать иконку удаления → Подтвердить
-   - ✅ Элемент исчезает с анимацией
+### READ - Чтение курсов
 
-3. **Редактирование элемента**
-   - Нажать иконку редактирования → Изменить цену → Сохранить
-   - ✅ Только цена обновляется без перерисовки всего элемента
+**Автоматическое обновление:**
+```kotlin
+// В MainActivity
+viewModel.allCourses.observe(this) { courses ->
+    courseAdapter.submitList(courses)
+}
 
-4. **Сортировка**
-   - Нажать "Цена" → Выбрать "По возрастанию"
-   - ✅ Элементы перестраиваются с анимацией
+// LiveData подписывается на изменения в БД
+// Любое изменение → автоматическое обновление UI!
+```
 
-5. **Фильтрация**
-   - Нажать "Рейтинг" → Выбрать "4.8 и выше"
-   - ✅ Ненужные элементы исчезают, нужные остаются
+### UPDATE - Обновление курса
+
+```kotlin
+// Пользователь редактирует курс
+val updatedCourse = course.copy(price = 20000.0)
+viewModel.update(updatedCourse)
+
+// Room обновляет БД
+// LiveData уведомляет
+// DiffUtil обновляет только измененный элемент
+```
+
+### DELETE - Удаление курса
+
+```kotlin
+viewModel.delete(course)
+
+// Room удаляет из БД
+// LiveData уведомляет
+// DiffUtil анимирует удаление
+```
+
+---
+
+## 💾 Как данные сохраняются после перезапуска?
+
+### Где хранится БД?
+
+**SQLite файл:** `/data/data/com.example.coursedatabase/databases/course_database.db`
+
+Этот файл **сохраняется на диске** и не удаляется при закрытии приложения.
+
+### Жизненный цикл данных:
+
+```
+1. Первый запуск
+   ↓
+   AppDatabase создается
+   ↓
+   DatabaseCallback.onCreate() вызывается
+   ↓
+   Вставляются демо-курсы
+   ↓
+   Данные записываются в course_database.db
+
+2. Закрытие приложения
+   ↓
+   Activity уничтожается
+   ViewModel уничтожается
+   LiveData отписывается
+   ↓
+   НО! course_database.db остается на диске
+
+3. Повторный запуск
+   ↓
+   AppDatabase.getDatabase() → находит существующий файл
+   ↓
+   Читает данные из course_database.db
+   ↓
+   LiveData доставляет данные в UI
+   ↓
+   Все курсы восстановлены!
+```
+
+### Удаление БД
+
+**Вручную:**
+```kotlin
+context.deleteDatabase("course_database")
+```
+
+**Автоматически:**
+- Удаление приложения → БД удаляется
+- Очистка данных в настройках → БД удаляется
+
+---
+
+## 🔀 Интеграция с DiffUtil
+
+Room + ListAdapter + DiffUtil = **идеальная комбинация**!
+
+```kotlin
+// Room возвращает новый список
+val newList = courseDao.getAllCourses()
+
+// LiveData уведомляет
+allCourses.observe { courses ->
+    // submitList() → DiffUtil вычисляет изменения
+    adapter.submitList(courses)
+}
+
+// DiffUtil сравнивает по ID из Room
+class CourseDiffCallback : DiffUtil.ItemCallback<Course>() {
+    override fun areItemsTheSame(old: Course, new: Course): Boolean {
+        return old.id == new.id  // ID из @PrimaryKey
+    }
+    
+    override fun areContentsTheSame(old: Course, new: Course): Boolean {
+        return old == new  // Data class сравнивает все поля
+    }
+}
+```
+
+---
+
+## 📊 Структура проекта
+
+```
+app/src/main/java/com/example/coursedatabase/
+├── data/
+│   ├── entity/
+│   │   └── Course.kt                 # @Entity - таблица БД
+│   ├── dao/
+│   │   └── CourseDao.kt              # @Dao - SQL операции
+│   ├── database/
+│   │   └── AppDatabase.kt            # @Database - главный класс БД
+│   └── repository/
+│       └── CourseRepository.kt       # Repository - прослойка
+├── viewmodel/
+│   └── CourseViewModel.kt            # ViewModel - управление данными
+├── adapter/
+│   └── CourseAdapter.kt              # Adapter с DiffUtil
+└── MainActivity.kt                   # UI
+
+app/src/main/res/
+├── layout/
+│   ├── activity_main.xml             # Главный экран
+│   ├── item_course.xml               # Элемент списка
+│   └── dialog_add_course.xml         # Диалог добавления
+└── values/
+    ├── strings.xml
+    ├── colors.xml
+    └── themes.xml
+```
 
 ---
 
 ## 🛠️ Технологии
 
 - **Kotlin** 1.9.20
-- **Android SDK** 34 (minSdk 24)
-- **Gradle** 8.2.0 (Kotlin DSL)
-- **RecyclerView** 1.3.2
-- **ListAdapter** + **DiffUtil** (встроенные в RecyclerView)
+- **Room** 2.6.1 (SQLite ORM)
+- **KSP** 1.9.20-1.0.14 (Kotlin Symbol Processing для Room)
+- **Coroutines** 1.7.3 (Асинхронность)
+- **LiveData** 2.6.2 (Реактивные данные)
+- **ViewModel** 2.6.2 (MVVM)
+- **ListAdapter** + **DiffUtil** (Оптимизация списков)
 - **Material Design 3** 1.11.0
-- **ViewModel & LiveData** 2.6.2
-- **ViewBinding** (включен в проекте)
 
 ---
 
-## 📦 Установка и запуск
+## 📦 Зависимости
 
-1. **Клонировать репозиторий:**
-```bash
-git clone <repository-url>
-cd practice6-diffutil
-```
-
-2. **Открыть в Android Studio:**
-```bash
-open -a "Android Studio" .
-```
-
-3. **Gradle Sync:**
-- Android Studio автоматически синхронизирует зависимости
-
-4. **Запустить:**
-- Выбрать эмулятор или физическое устройство
-- Run → Run 'app'
-
----
-
-## 📝 Git workflow
-
-```bash
-# 1. Создать ветку
-git checkout -b feature/practice6-diffutil
-
-# 2. Коммиты
-git add .
-git commit -m "Practice6: Initial project setup"
-git commit -m "Practice6: Add Course model and ViewModel"
-git commit -m "Practice6: Implement ListAdapter with DiffUtil"
-git commit -m "Practice6: Add MainActivity with CRUD operations"
-
-# 3. Отправить в репозиторий
-git push origin feature/practice6-diffutil
-```
-
----
-
-## 📚 Ответы на контрольные вопросы
-
-### 1. Зачем нужен DiffUtil?
-
-**DiffUtil** нужен для эффективного обновления RecyclerView. Он:
-- Вычисляет минимальное количество изменений между двумя списками
-- Обновляет только измененные элементы вместо всего списка
-- Добавляет автоматические анимации
-- Работает в фоновом потоке, не блокируя UI
-
-**Без DiffUtil:**
 ```kotlin
-notifyDataSetChanged()  // ❌ Перерисовка всех элементов
-```
-
-**С DiffUtil:**
-```kotlin
-submitList(newList)  // ✅ Обновление только изменений
-```
-
----
-
-### 2. В чем отличие RecyclerView.Adapter от ListAdapter?
-
-| Аспект | RecyclerView.Adapter | ListAdapter |
-|--------|----------------------|-------------|
-| **Хранение данных** | Вручную управляем списком | ListAdapter хранит список внутри |
-| **Обновление** | `notifyDataSetChanged()` | `submitList()` |
-| **DiffUtil** | Нужно реализовывать отдельно | Встроен |
-| **getItemCount()** | Нужно переопределять | Автоматически |
-| **getItem()** | Нужно получать из списка вручную | Метод `getItem(position)` |
-
-**RecyclerView.Adapter:**
-```kotlin
-class OldAdapter : RecyclerView.Adapter<ViewHolder>() {
-    private var list: List<Course> = emptyList()
+dependencies {
+    // Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")  // Coroutines support
+    ksp("androidx.room:room-compiler:2.6.1")        // Annotation processor
     
-    fun updateList(newList: List<Course>) {
-        list = newList
-        notifyDataSetChanged()
-    }
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
-    override fun getItemCount() = list.size
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position])
-    }
+    // ViewModel & LiveData
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 }
 ```
 
-**ListAdapter:**
-```kotlin
-class NewAdapter : ListAdapter<Course, ViewHolder>(DiffCallback()) {
-    // list хранится внутри ListAdapter
-    // getItemCount() автоматически
-    
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))  // getItem() из ListAdapter
-    }
-}
+---
 
-// Использование:
-adapter.submitList(newList)  // DiffUtil автоматически
+## 🧪 Тестирование CRUD
+
+### 1. CREATE - Добавление
+
+**Действия:**
+1. Запустить приложение
+2. Нажать FAB (+)
+3. Заполнить форму
+4. Нажать "Сохранить"
+
+**Ожидаемый результат:**
+- ✅ Курс появляется в списке
+- ✅ Snackbar: "Курс добавлен в БД (ID: 8)"
+- ✅ Статистика обновляется
+- ✅ После перезапуска курс остается
+
+### 2. READ - Чтение
+
+**Действия:**
+1. Перезапустить приложение
+2. Просмотреть список
+
+**Ожидаемый результат:**
+- ✅ Все курсы отображаются
+- ✅ Данные соответствуют БД
+- ✅ ID курсов отображаются
+
+### 3. UPDATE - Обновление
+
+**Действия:**
+1. Нажать иконку редактирования
+2. Изменить цену
+3. Нажать "Сохранить"
+
+**Ожидаемый результат:**
+- ✅ Цена обновляется в списке
+- ✅ DiffUtil анимирует изменение
+- ✅ После перезапуска новая цена сохранена
+
+### 4. DELETE - Удаление
+
+**Действия:**
+1. Нажать иконку удаления
+2. Подтвердить удаление
+
+**Ожидаемый результат:**
+- ✅ Курс исчезает из списка
+- ✅ DiffUtil анимирует удаление
+- ✅ Статистика обновляется
+- ✅ После перезапуска курс отсутствует
+
+### 5. Проверка сохранения
+
+**Действия:**
+1. Добавить курс
+2. Закрыть приложение (kill process)
+3. Открыть приложение снова
+
+**Ожидаемый результат:**
+- ✅ Добавленный курс присутствует
+- ✅ Все данные восстановлены
+
+---
+
+## 📝 Ответы на контрольные вопросы
+
+### 1. Что такое Room?
+
+**Room** — это библиотека ORM (Object-Relational Mapping) от Google для работы с SQLite в Android.
+
+Room **переводит объекты Kotlin в таблицы SQL** и наоборот.
+
+**Компоненты:**
+- **Entity** — таблица БД (Kotlin class → SQL table)
+- **DAO** — методы для работы с БД (Kotlin functions → SQL queries)
+- **Database** — главный класс БД (управляет подключением)
+
+**Преимущества перед чистым SQLite:**
+- Меньше boilerplate кода
+- Проверка SQL на этапе компиляции
+- Интеграция с LiveData и Coroutines
+- Автоматические миграции
+
+---
+
+### 2. Что делает DAO?
+
+**DAO (Data Access Object)** — интерфейс с методами для работы с БД.
+
+Room **автоматически генерирует реализацию** DAO.
+
+**Функции DAO:**
+
+1. **CRUD операции:**
+```kotlin
+@Insert suspend fun insert(course: Course)
+@Update suspend fun update(course: Course)
+@Delete suspend fun delete(course: Course)
+```
+
+2. **Запросы к БД:**
+```kotlin
+@Query("SELECT * FROM courses")
+fun getAllCourses(): LiveData<List<Course>>
+
+@Query("SELECT * FROM courses WHERE id = :id")
+suspend fun getCourseById(id: Long): Course?
+```
+
+3. **Кастомные обновления:**
+```kotlin
+@Query("UPDATE courses SET price = :newPrice WHERE id = :courseId")
+suspend fun updatePrice(courseId: Long, newPrice: Double)
+```
+
+**Зачем интерфейс?** Room генерирует реализацию на этапе компиляции.
+
+---
+
+### 3. Что такое CRUD?
+
+**CRUD** — акроним для 4 основных операций с данными:
+
+| Операция | SQL | Room | Описание |
+|----------|-----|------|----------|
+| **C**reate | INSERT | @Insert | Создание новой записи |
+| **R**ead | SELECT | @Query | Чтение данных |
+| **U**pdate | UPDATE | @Update | Обновление записи |
+| **D**elete | DELETE | @Delete | Удаление записи |
+
+**Пример в проекте:**
+
+**CREATE:**
+```kotlin
+@Insert suspend fun insert(course: Course): Long
+// SQL: INSERT INTO courses VALUES (...)
+```
+
+**READ:**
+```kotlin
+@Query("SELECT * FROM courses")
+fun getAllCourses(): LiveData<List<Course>>
+// SQL: SELECT * FROM courses
+```
+
+**UPDATE:**
+```kotlin
+@Update suspend fun update(course: Course): Int
+// SQL: UPDATE courses SET title=?, price=? WHERE id=?
+```
+
+**DELETE:**
+```kotlin
+@Delete suspend fun delete(course: Course): Int
+// SQL: DELETE FROM courses WHERE id=?
 ```
 
 ---
 
-### 3. Почему нельзя использовать notifyDataSetChanged()?
+### 4. Почему используется Repository?
 
-`notifyDataSetChanged()` **можно** использовать, но это **неэффективно**:
+**Repository** — прослойка между ViewModel и источниками данных.
+
+**Архитектура БЕЗ Repository:**
+```
+ViewModel → DAO → SQLite
+```
 
 **Проблемы:**
-1. **Перерисовка всего списка** — даже если изменился 1 элемент
-2. **Нет анимаций** — элементы просто мгновенно меняются
-3. **Мерцание** — экран "прыгает"
-4. **Потеря состояния** — может сбиться позиция прокрутки
-5. **Низкая производительность** — тормоза при больших списках
+1. ViewModel знает о Room
+2. Нельзя добавить API
+3. Сложно тестировать
+4. Дублирование кода
 
-**Пример:**
-```kotlin
-// Список из 1000 элементов
-val list = List(1000) { Course(...) }
-
-// Изменяем ОДИН элемент
-list[500] = updatedCourse
-
-// ❌ ПЛОХО
-adapter.notifyDataSetChanged()
-// Результат: перерисовка ВСЕХ 1000 элементов!
-
-// ✅ ХОРОШО
-adapter.submitList(newList)
-// Результат: обновление ТОЛЬКО элемента #500
+**Архитектура С Repository:**
+```
+ViewModel → Repository → (DAO + API + Cache)
 ```
 
----
+**Преимущества:**
 
-### 4. Как DiffUtil определяет изменения в списке?
-
-DiffUtil использует **два метода**:
-
-**Шаг 1: `areItemsTheSame()`** — это один и тот же объект?
+1. **Абстракция источника данных:**
 ```kotlin
-override fun areItemsTheSame(oldItem: Course, newItem: Course): Boolean {
-    return oldItem.id == newItem.id  // Сравниваем по уникальному ID
+// ViewModel не знает откуда данные (БД? API? Cache?)
+class CourseViewModel(repository: CourseRepository) {
+    val courses = repository.allCourses  // Откуда? Не важно!
 }
 ```
 
-**Шаг 2: `areContentsTheSame()`** — изменилось ли содержимое?
+2. **Легко добавить API:**
 ```kotlin
-override fun areContentsTheSame(oldItem: Course, newItem: Course): Boolean {
-    return oldItem == newItem  // Data class автоматически сравнивает все поля
+class CourseRepository(
+    private val dao: CourseDao,
+    private val api: CourseApi  // Добавили API!
+) {
+    suspend fun refresh() {
+        val courses = api.getCourses()  // Из сети
+        dao.insertAll(courses)          // В БД
+    }
 }
 ```
 
-**Алгоритм работы:**
-
+3. **Легко тестировать:**
+```kotlin
+// Mock Repository для тестов
+class FakeRepository : CourseRepository {
+    override fun getAllCourses() = MutableLiveData(fakeData)
+}
 ```
-Старый список: [Course(id=1, price=100), Course(id=2, price=200)]
-Новый список:  [Course(id=1, price=150), Course(id=2, price=200)]
 
-Для каждого элемента:
-1. areItemsTheSame(old[0], new[0])
-   → id=1 == id=1  ✅ true
-
-2. areContentsTheSame(old[0], new[0])
-   → Course(1,100) == Course(1,150)  ❌ false
-   → Вывод: ОБНОВИТЬ элемент #0
-
-3. areItemsTheSame(old[1], new[1])
-   → id=2 == id=2  ✅ true
-
-4. areContentsTheSame(old[1], new[1])
-   → Course(2,200) == Course(2,200)  ✅ true
-   → Вывод: НЕ ТРОГАТЬ элемент #1
-
-Результат:
-- Элемент #0: notifyItemChanged(0)
-- Элемент #1: ничего не делаем
+4. **Единое место для логики:**
+```kotlin
+suspend fun addCourseWithValidation(course: Course): Result<Long> {
+    // Валидация
+    if (course.price < 0) return Result.failure(...)
+    
+    // Вставка
+    val id = dao.insert(course)
+    return Result.success(id)
+}
 ```
 
 ---
 
-### 5. Какие проблемы производительности решает DiffUtil?
+### 5. Как данные сохраняются после перезапуска?
 
-1. **Избыточная перерисовка**
-   - Без DiffUtil: перерисовка всего списка
-   - С DiffUtil: только измененные элементы
+**Механизм сохранения:**
 
-2. **Блокировка UI потока**
-   - Без DiffUtil: все вычисления в главном потоке
-   - С DiffUtil: вычисления в фоновом потоке
-
-3. **Отсутствие анимаций**
-   - Без DiffUtil: мгновенные изменения, мерцание
-   - С DiffUtil: плавные анимации
-
-4. **Проблемы с памятью**
-   - Без DiffUtil: создание лишних ViewHolder
-   - С DiffUtil: переиспользование существующих
-
-5. **Потеря состояния**
-   - Без DiffUtil: сброс позиции прокрутки, выделения
-   - С DiffUtil: сохранение всего состояния
-
-**Производительность на практике:**
-
+1. **SQLite файл на диске:**
 ```
-Список из 100 элементов, изменен 1 элемент:
-
-БЕЗ DiffUtil (notifyDataSetChanged):
-- Вызовов onBindViewHolder: 100
-- Время обновления: ~50ms
-- Анимации: нет
-
-С DiffUtil (submitList):
-- Вызовов onBindViewHolder: 1
-- Время обновления: ~5ms (вычисления в фоне)
-- Анимации: да
+Путь: /data/data/com.example.coursedatabase/databases/course_database.db
 ```
+
+2. **Первый запуск:**
+```
+AppDatabase создается
+  ↓
+DatabaseCallback.onCreate()
+  ↓
+Вставляются демо-курсы
+  ↓
+Записываются в course_database.db (на диске)
+```
+
+3. **Закрытие приложения:**
+```
+Activity → onDestroy()
+ViewModel → onCleared()
+LiveData → отписывается
+БД → закрывается
+
+НО! Файл course_database.db остается на диске
+```
+
+4. **Повторный запуск:**
+```
+AppDatabase.getDatabase(context)
+  ↓
+Room.databaseBuilder(...).build()
+  ↓
+Проверяет: существует ли course_database.db?
+  ↓
+ДА → открывает существующий файл
+  ↓
+Читает данные из БД
+  ↓
+LiveData доставляет в UI
+  ↓
+Данные восстановлены!
+```
+
+**Когда БД удаляется?**
+- Удаление приложения
+- Очистка данных в настройках
+- `context.deleteDatabase("course_database")`
+
+**Вывод:** Room сохраняет данные в **файл на диске**, который сохраняется между запусками приложения.
 
 ---
 
-## 📖 Дополнительные материалы
+## 🎓 Дополнительные материалы
 
-- [Официальная документация DiffUtil](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil)
-- [Официальная документация ListAdapter](https://developer.android.com/reference/androidx/recyclerview/widget/ListAdapter)
-- [Android Developers: RecyclerView](https://developer.android.com/guide/topics/ui/layout/recyclerview)
+- [Официальная документация Room](https://developer.android.com/training/data-storage/room)
+- [Coroutines with Room](https://developer.android.com/kotlin/coroutines)
+- [Repository Pattern](https://developer.android.com/codelabs/android-room-with-a-view-kotlin)
+- [MVVM Architecture](https://developer.android.com/topic/architecture)
 
 ---
 
 ## 👨‍💻 Автор
 
-Практическая работа №6 — DiffUtil и ListAdapter
+Практическая работа №7 — Room Database и CRUD
 
 **Дата:** 2025

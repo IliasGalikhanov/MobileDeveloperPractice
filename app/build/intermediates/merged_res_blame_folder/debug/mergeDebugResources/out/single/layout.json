@@ -1,18 +1,18 @@
 [
     {
-        "merged": "com.example.coursemanager.app-mergeDebugResources-39:/layout/activity_main.xml",
-        "source": "com.example.coursemanager.app-main-42:/layout/activity_main.xml"
+        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-mergeDebugResources-42:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-mergeDebugResources-39:\\layout\\dialog_add_course.xml",
-        "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\layout\\dialog_add_course.xml"
+        "merged": "com.example.coursedatabase.app-mergeDebugResources-42:/layout/activity_main.xml",
+        "source": "com.example.coursedatabase.app-main-45:/layout/activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-mergeDebugResources-39:\\layout\\activity_main.xml",
-        "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\layout\\activity_main.xml"
+        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-mergeDebugResources-42:\\layout\\item_course.xml",
+        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\item_course.xml"
     },
     {
-        "merged": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-mergeDebugResources-39:\\layout\\item_course.xml",
-        "source": "C:\\Users\\starl\\.gradle\\daemon\\9.1.0\\com.example.coursemanager.app-main-42:\\layout\\item_course.xml"
+        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-mergeDebugResources-42:\\layout\\dialog_add_course.xml",
+        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\dialog_add_course.xml"
     }
 ]

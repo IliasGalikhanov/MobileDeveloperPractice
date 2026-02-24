@@ -1,125 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="md_theme_dark_background">#1C1B1F</color>
-    <color name="md_theme_dark_error">#F2B8B5</color>
-    <color name="md_theme_dark_errorContainer">#8C1D18</color>
-    <color name="md_theme_dark_onBackground">#E6E1E5</color>
-    <color name="md_theme_dark_onError">#601410</color>
-    <color name="md_theme_dark_onErrorContainer">#F9DEDC</color>
-    <color name="md_theme_dark_onPrimary">#381E72</color>
-    <color name="md_theme_dark_onPrimaryContainer">#EADDFF</color>
-    <color name="md_theme_dark_onSecondary">#332D41</color>
-    <color name="md_theme_dark_onSecondaryContainer">#E8DEF8</color>
-    <color name="md_theme_dark_onSurface">#E6E1E5</color>
-    <color name="md_theme_dark_onSurfaceVariant">#CAC4D0</color>
-    <color name="md_theme_dark_onTertiary">#492532</color>
-    <color name="md_theme_dark_onTertiaryContainer">#FFD8E4</color>
-    <color name="md_theme_dark_outline">#938F99</color>
-    <color name="md_theme_dark_primary">#D0BCFF</color>
-    <color name="md_theme_dark_primaryContainer">#4F378B</color>
-    <color name="md_theme_dark_secondary">#CCC2DC</color>
-    <color name="md_theme_dark_secondaryContainer">#4A4458</color>
-    <color name="md_theme_dark_surface">#1C1B1F</color>
-    <color name="md_theme_dark_surfaceVariant">#49454F</color>
-    <color name="md_theme_dark_tertiary">#EFB8C8</color>
-    <color name="md_theme_dark_tertiaryContainer">#633B48</color>
     <color name="md_theme_light_background">#FFFBFE</color>
     <color name="md_theme_light_error">#B3261E</color>
-    <color name="md_theme_light_errorContainer">#F9DEDC</color>
     <color name="md_theme_light_onBackground">#1C1B1F</color>
     <color name="md_theme_light_onError">#FFFFFF</color>
-    <color name="md_theme_light_onErrorContainer">#410E0B</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
-    <color name="md_theme_light_onPrimaryContainer">#21005D</color>
-    <color name="md_theme_light_onSecondary">#FFFFFF</color>
-    <color name="md_theme_light_onSecondaryContainer">#1D192B</color>
     <color name="md_theme_light_onSurface">#1C1B1F</color>
     <color name="md_theme_light_onSurfaceVariant">#49454F</color>
-    <color name="md_theme_light_onTertiary">#FFFFFF</color>
-    <color name="md_theme_light_onTertiaryContainer">#31111D</color>
     <color name="md_theme_light_outline">#79747E</color>
     <color name="md_theme_light_primary">#6750A4</color>
-    <color name="md_theme_light_primaryContainer">#EADDFF</color>
-    <color name="md_theme_light_secondary">#625B71</color>
-    <color name="md_theme_light_secondaryContainer">#E8DEF8</color>
     <color name="md_theme_light_surface">#FFFBFE</color>
-    <color name="md_theme_light_surfaceVariant">#E7E0EC</color>
-    <color name="md_theme_light_tertiary">#7D5260</color>
-    <color name="md_theme_light_tertiaryContainer">#FFD8E4</color>
     <string name="add_course">Добавить курс</string>
-    <string name="app_name">Менеджер Курсов</string>
+    <string name="app_name">База Данных Курсов</string>
     <string name="cancel">Отмена</string>
     <string name="close">Закрыть</string>
-    <string name="course_added">Курс добавлен</string>
-    <string name="course_deleted">Курс удален</string>
-    <string name="course_details">Детали курса</string>
-    <string name="course_updated">Курс обновлен</string>
-    <string name="courses_count">Найдено курсов: %d</string>
+    <string name="course_added">Курс добавлен в БД</string>
+    <string name="course_deleted">Курс удален из БД</string>
+    <string name="course_updated">Курс обновлен в БД</string>
     <string name="delete">Удалить</string>
-    <string name="delete_confirm">Вы уверены, что хотите удалить этот курс?</string>
+    <string name="delete_confirm">Удалить этот курс из базы данных?</string>
     <string name="delete_course">Удалить курс</string>
     <string name="edit_course">Редактировать курс</string>
-    <string name="empty_list">Список курсов пуст</string>
     <string name="enroll">Записаться</string>
-    <string name="enrolled_success">Вы успешно записались на курс!</string>
-    <string name="error_empty_description">Введите описание</string>
-    <string name="error_empty_duration">Введите длительность</string>
-    <string name="error_empty_instructor">Введите имя преподавателя</string>
-    <string name="error_empty_title">Введите название курса</string>
-    <string name="error_invalid_price">Введите корректную цену</string>
-    <string name="error_invalid_rating">Рейтинг должен быть от 0.0 до 5.0</string>
-    <string name="error_invalid_students">Введите количество студентов</string>
-    <string name="filter_by_rating">Фильтр по рейтингу</string>
-    <string name="filter_price">Цена</string>
-    <string name="filter_rating">Рейтинг</string>
-    <string name="rating_45_plus">4.5 и выше</string>
-    <string name="rating_47_plus">4.7 и выше</string>
-    <string name="rating_48_plus">4.8 и выше</string>
-    <string name="reset_filters">Сброс</string>
+    <string name="enrolled_success">Вы записались! Данные сохранены в БД</string>
+    <string name="error_empty_title">Введите название</string>
     <string name="save">Сохранить</string>
-    <string name="sort_by_price">Сортировать по цене</string>
-    <string name="sort_price_asc">По возрастанию цены</string>
-    <string name="sort_price_desc">По убыванию цены</string>
-    <style name="Base.Theme.CourseManager" parent="Theme.Material3.Light.NoActionBar">
-        
+    <style name="Base.Theme.CourseDatabase" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
-        
-        
-        <item name="colorSecondary">@color/md_theme_light_secondary</item>
-        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
-        
-        
-        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
-        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
-        
-        
         <item name="colorError">@color/md_theme_light_error</item>
         <item name="colorOnError">@color/md_theme_light_onError</item>
-        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
-        
-        
         <item name="android:colorBackground">@color/md_theme_light_background</item>
         <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
-        
-        
         <item name="colorSurface">@color/md_theme_light_surface</item>
         <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
         <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
-        
-        
         <item name="colorOutline">@color/md_theme_light_outline</item>
-        
-        
         <item name="android:statusBarColor">@color/md_theme_light_primary</item>
     </style>
-    <style name="Theme.CourseManager" parent="Base.Theme.CourseManager"/>
+    <style name="Theme.CourseDatabase" parent="Base.Theme.CourseDatabase"/>
 </resources>

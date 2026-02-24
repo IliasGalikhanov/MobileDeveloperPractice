@@ -16,18 +16,31 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <!-- ID курса из БД -->
+        <TextView
+            android:id="@+id/tvCourseId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:fontFamily="monospace"
+            tools:text="ID: 1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <!-- Название курса -->
         <TextView
             android:id="@+id/tvCourseTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
             android:maxLines="2"
             android:ellipsize="end"
             tools:text="Android Development с Kotlin"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCourseId"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnEdit" />
 
@@ -40,7 +53,7 @@
             app:icon="@drawable/ic_edit"
             app:iconTint="?attr/colorPrimary"
             android:contentDescription="Редактировать"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvCourseTitle"
             app:layout_constraintEnd_toStartOf="@id/btnDelete" />
 
         <!-- Кнопка удаления -->
@@ -52,7 +65,7 @@
             app:icon="@drawable/ic_delete"
             app:iconTint="?attr/colorError"
             android:contentDescription="Удалить"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvCourseTitle"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Преподаватель -->
@@ -108,7 +121,6 @@
 
             <!-- Длительность -->
             <ImageView
-                android:id="@+id/icTime"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_time"
@@ -151,7 +163,6 @@
 
             <!-- Количество студентов -->
             <ImageView
-                android:id="@+id/icPeople"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_people"
@@ -189,7 +200,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
-                tools:text="15 990 ₽" />
+                tools:text="15990 ₽" />
 
         </LinearLayout>
 
