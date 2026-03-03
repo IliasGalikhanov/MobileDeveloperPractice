@@ -10,13 +10,18 @@ import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.databinding.ActivityMainBinding
 import com.example.coursedatabase.databinding.DialogAddCourseBinding
 import com.example.coursedatabase.viewmodel.CourseViewModel
+import com.example.coursedatabase.viewmodel.CourseViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: CourseViewModel by viewModels()
+    private val viewModel: CourseViewModel by viewModels {
+        val database = com.example.coursedatabase.data.database.AppDatabase.getDatabase(applicationContext)
+        val repository = com.example.coursedatabase.data.repository.CourseRepository(database.courseDao())
+        CourseViewModelFactory(repository)
+    }
     private lateinit var courseAdapter: CourseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,34 +1,24 @@
 package com.example.coursedatabase.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.coursedatabase.data.database.AppDatabase
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.repository.CourseRepository
 import kotlinx.coroutines.launch
 
-class CourseViewModel(application: Application) : AndroidViewModel(application) {
-    
-    private val repository: CourseRepository
-    val allCourses: LiveData<List<Course>>
-    
-    private val _selectedCourse = MutableLiveData<Course?>()
-    val selectedCourse: LiveData<Course?> = _selectedCourse
-    
+class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
+
+    val allCourses: LiveData<List<Course>> = repository.allCourses
+
     private val _statistics = MutableLiveData<Statistics>()
     val statistics: LiveData<Statistics> = _statistics
-    
+
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
-    
+
     init {
-        val database = AppDatabase.getDatabase(application)
-        val courseDao = database.courseDao()
-        repository = CourseRepository(courseDao)
-        allCourses = repository.allCourses
         loadStatistics()
     }
     
@@ -130,14 +120,6 @@ class CourseViewModel(application: Application) : AndroidViewModel(application) 
                 _errorMessage.value = "Ошибка при удалении всех курсов: ${e.message}"
             }
         }
-    }
-    
-    fun selectCourse(course: Course) {
-        _selectedCourse.value = course
-    }
-    
-    fun clearSelection() {
-        _selectedCourse.value = null
     }
     
     fun clearError() {
