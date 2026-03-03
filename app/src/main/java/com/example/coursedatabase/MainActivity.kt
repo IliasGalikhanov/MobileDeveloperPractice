@@ -6,11 +6,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coursedatabase.adapter.CourseAdapter
+import com.example.coursedatabase.adapter.PostAdapter
 import com.example.coursedatabase.data.entity.Course
+import com.example.coursedatabase.data.network.RetrofitProvider
 import com.example.coursedatabase.databinding.ActivityMainBinding
 import com.example.coursedatabase.databinding.DialogAddCourseBinding
 import com.example.coursedatabase.viewmodel.CourseViewModel
 import com.example.coursedatabase.viewmodel.CourseViewModelFactory
+import com.example.coursedatabase.viewmodel.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -19,10 +22,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: CourseViewModel by viewModels {
         val database = com.example.coursedatabase.data.database.AppDatabase.getDatabase(applicationContext)
-        val repository = com.example.coursedatabase.data.repository.CourseRepository(database.courseDao())
+        val apiService = RetrofitProvider.apiService
+        val repository = com.example.coursedatabase.data.repository.CourseRepository(database.courseDao(), apiService)
         CourseViewModelFactory(repository)
     }
     private lateinit var courseAdapter: CourseAdapter
+    private lateinit var postAdapter: PostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +57,13 @@ class MainActivity : AppCompatActivity() {
             adapter = courseAdapter
             setHasFixedSize(true)
         }
+
+        postAdapter = PostAdapter()
+        binding.rvPosts.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = postAdapter
+            setHasFixedSize(true)
+        }
     }
 
     private fun setupObservers() {
@@ -60,17 +72,39 @@ class MainActivity : AppCompatActivity() {
             binding.layoutEmpty.visibility = if (courses.isEmpty()) View.VISIBLE else View.GONE
             binding.recyclerView.visibility = if (courses.isEmpty()) View.GONE else View.VISIBLE
         }
-        
+
         viewModel.statistics.observe(this) { stats ->
             binding.tvCoursesCount.text = stats.coursesCount.toString()
             binding.tvAveragePrice.text = "${stats.averagePrice.toInt()} ₸"
             binding.tvTotalStudents.text = stats.totalStudents.toString()
         }
-        
+
         viewModel.errorMessage.observe(this) { error ->
             error?.let {
                 showSnackbar(it)
                 viewModel.clearError()
+            }
+        }
+
+        viewModel.postsState.observe(this) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.rvPosts.visibility = View.GONE
+                    binding.layoutError.visibility = View.GONE
+                }
+                is UiState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.rvPosts.visibility = View.VISIBLE
+                    binding.layoutError.visibility = View.GONE
+                    postAdapter.submitList(state.data)
+                }
+                is UiState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.rvPosts.visibility = View.GONE
+                    binding.layoutError.visibility = View.VISIBLE
+                    binding.tvErrorMessage.text = state.message
+                }
             }
         }
     }
@@ -79,11 +113,14 @@ class MainActivity : AppCompatActivity() {
         binding.fabAddCourse.setOnClickListener {
             showAddCourseDialog()
         }
+        binding.btnRetry.setOnClickListener {
+            viewModel.fetchPosts()
+        }
     }
 
     private fun showAddCourseDialog() {
         val dialogBinding = DialogAddCourseBinding.inflate(layoutInflater)
-        
+
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.add_course)
             .setView(dialogBinding.root)
@@ -107,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showEditCourseDialog(course: Course) {
         val dialogBinding = DialogAddCourseBinding.inflate(layoutInflater)
-        
+
         dialogBinding.apply {
             etTitle.setText(course.title)
             etDescription.setText(course.description)
@@ -117,7 +154,7 @@ class MainActivity : AppCompatActivity() {
             etRating.setText(course.rating.toString())
             etStudents.setText(course.studentsCount.toString())
         }
-        
+
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.edit_course)
             .setView(dialogBinding.root)

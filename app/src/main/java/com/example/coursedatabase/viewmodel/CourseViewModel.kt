@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coursedatabase.data.dto.PostDto
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.repository.CourseRepository
 import kotlinx.coroutines.launch
@@ -11,6 +12,9 @@ import kotlinx.coroutines.launch
 class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
 
     val allCourses: LiveData<List<Course>> = repository.allCourses
+
+    private val _postsState = MutableLiveData<UiState<List<PostDto>>>()
+    val postsState: LiveData<UiState<List<PostDto>>> = _postsState
 
     private val _statistics = MutableLiveData<Statistics>()
     val statistics: LiveData<Statistics> = _statistics
@@ -20,8 +24,21 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
 
     init {
         loadStatistics()
+        fetchPosts()
     }
-    
+
+    fun fetchPosts() {
+        viewModelScope.launch {
+            _postsState.value = UiState.Loading
+            val result = repository.fetchPosts()
+            result.onSuccess { posts ->
+                _postsState.value = UiState.Success(posts)
+            }.onFailure { error ->
+                _postsState.value = UiState.Error(error.message ?: "Неизвестная ошибка")
+            }
+        }
+    }
+
     fun insert(course: Course) {
         viewModelScope.launch {
             try {
@@ -32,7 +49,7 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun insertWithValidation(course: Course, onSuccess: (Long) -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             val result = repository.addCourseWithValidation(course)
@@ -44,23 +61,23 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun searchCourses(query: String): LiveData<List<Course>> {
         return repository.searchCourses(query)
     }
-    
+
     fun filterByRating(minRating: Float): LiveData<List<Course>> {
         return repository.getCoursesByRating(minRating)
     }
-    
+
     fun filterByPrice(minPrice: Double, maxPrice: Double): LiveData<List<Course>> {
         return repository.getCoursesByPriceRange(minPrice, maxPrice)
     }
-    
+
     fun getTopCourses(limit: Int = 5): LiveData<List<Course>> {
         return repository.getTopCourses(limit)
     }
-    
+
     fun update(course: Course) {
         viewModelScope.launch {
             try {
@@ -75,7 +92,7 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun updatePrice(courseId: Long, newPrice: Double) {
         viewModelScope.launch {
             try {
@@ -85,7 +102,7 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun enrollToCourse(courseId: Long, currentStudentsCount: Int, currentRating: Float) {
         viewModelScope.launch {
             try {
@@ -97,7 +114,7 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun delete(course: Course) {
         viewModelScope.launch {
             try {
@@ -110,7 +127,7 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun deleteAll() {
         viewModelScope.launch {
             try {
@@ -121,18 +138,18 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     fun clearError() {
         _errorMessage.value = null
     }
-    
+
     private fun loadStatistics() {
         viewModelScope.launch {
             try {
                 val count = repository.getCoursesCount()
                 val averagePrice = repository.getAveragePrice()
                 val totalStudents = repository.getTotalStudents()
-                
+
                 _statistics.value = Statistics(
                     coursesCount = count,
                     averagePrice = averagePrice,
@@ -143,7 +160,7 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
             }
         }
     }
-    
+
     data class Statistics(
         val coursesCount: Int = 0,
         val averagePrice: Double = 0.0,
