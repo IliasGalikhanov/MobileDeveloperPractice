@@ -75,7 +75,7 @@ class CourseRepository(
 
     suspend fun deleteById(courseId: Long): Int {
         Log.d("CourseRepository", "Deleting course by id: $courseId")
-        courseDao.deleteById(courseId)
+        return courseDao.deleteById(courseId)
     }
 
     suspend fun deleteAll() {
@@ -102,18 +102,15 @@ class CourseRepository(
         Log.d("CourseRepository", "Adding course with validation: $course")
         return try {
             if (course.title.isBlank()) {
-                return Result.failure(Exception("Название курса не может быть пустым"))
+                Result.failure(Exception("Название курса не может быть пустым"))
+            } else if (course.price < 0) {
+                Result.failure(Exception("Цена не может быть отрицательной"))
+            } else if (course.rating !in 0.0f..5.0f) {
+                Result.failure(Exception("Рейтинг должен быть от 0 до 5"))
+            } else {
+                val id = courseDao.insert(course)
+                Result.success(id)
             }
-            if (course.price < 0) {
-                return Result.failure(Exception("Цена не может быть отрицательной"))
-            }
-            if (course.rating !in 0.0f..5.0f) {
-                return Result.failure(Exception("Рейтинг должен быть от 0 до 5"))
-            }
-
-            val id = courseDao.insert(course)
-            Result.success(id)
-
         } catch (e: Exception) {
             Result.failure(e)
         }
