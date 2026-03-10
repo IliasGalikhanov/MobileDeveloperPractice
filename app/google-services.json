@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "754821584714",
+    "project_id": "coursedatabase-24c21",
+    "storage_bucket": "coursedatabase-24c21.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754821584714:android:bb2c0dfeee2812463ad3b3",
+        "android_client_info": {
+          "package_name": "com.example.coursedatabase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfazU0hjmjI3z1ySJtqe_C6-CO33ZmZKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

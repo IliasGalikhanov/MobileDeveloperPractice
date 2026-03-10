@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.coursedatabase.app-mergeDebugResources-41:/values-v26/values-v26.xml",
+            "outputFile": "com.example.coursedatabase.app-mergeDebugResources-46:/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\starl\\.gradle\\caches\\8.10.2\\transforms\\de3e3cca508d1100da73f7be391264ef\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",
+                    "source": "C:\\Users\\starl\\.gradle\\caches\\8.10.2\\transforms\\a487fafdd97c45e3d770a2966bcd62f7\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",
                     "from": {
                         "startLines": "2,3,4,8,12,16",
                         "startColumns": "4,4,4,4,4,4",

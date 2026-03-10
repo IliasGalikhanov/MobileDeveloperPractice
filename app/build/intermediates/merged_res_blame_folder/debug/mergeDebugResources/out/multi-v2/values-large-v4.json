@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.coursedatabase.app-mergeDebugResources-41:/values-large-v4/values-large-v4.xml",
+            "outputFile": "com.example.coursedatabase.app-mergeDebugResources-46:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\starl\\.gradle\\caches\\8.10.2\\transforms\\de3e3cca508d1100da73f7be391264ef\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\starl\\.gradle\\caches\\8.10.2\\transforms\\a487fafdd97c45e3d770a2966bcd62f7\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\starl\\.gradle\\caches\\8.10.2\\transforms\\4a52ed826d56db0c4a082e1137437514\\transformed\\material-1.11.0\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\starl\\.gradle\\caches\\8.10.2\\transforms\\69433c8765d400e83afaeaeee4be7b24\\transformed\\material-1.11.0\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

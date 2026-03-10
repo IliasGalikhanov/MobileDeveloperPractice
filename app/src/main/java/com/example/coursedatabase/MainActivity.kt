@@ -1,5 +1,6 @@
 package com.example.coursedatabase
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -14,6 +15,7 @@ import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.network.RetrofitProvider
 import com.example.coursedatabase.databinding.ActivityMainBinding
 import com.example.coursedatabase.databinding.DialogAddCourseBinding
+import com.example.coursedatabase.viewmodel.AuthViewModel
 import com.example.coursedatabase.viewmodel.CourseViewModel
 import com.example.coursedatabase.viewmodel.CourseViewModelFactory
 import com.example.coursedatabase.viewmodel.UiState
@@ -30,17 +32,33 @@ class MainActivity : AppCompatActivity() {
         val repository = com.example.coursedatabase.data.repository.CourseRepository(database.courseDao(), apiService)
         CourseViewModelFactory(repository)
     }
+    private val authViewModel: AuthViewModel by viewModels()
+    
     private lateinit var courseAdapter: CourseAdapter
     private lateinit var postAdapter: PostAdapter
+    private var userRole: String = "student"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userRole = authViewModel.getUserRole(this)
+        
+        setupUIBasedOnRole()
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
+    }
+
+    private fun setupUIBasedOnRole() {
+        if (userRole == "teacher") {
+            binding.fabAddCourse.visibility = View.VISIBLE
+            binding.toolbar.title = "Панель Учителя"
+        } else {
+            binding.fabAddCourse.visibility = View.GONE
+            binding.toolbar.title = "Панель Ученика"
+        }
     }
 
     private fun setupRecyclerView() {
@@ -49,10 +67,12 @@ class MainActivity : AppCompatActivity() {
                 showCourseDetails(course)
             },
             onCourseEdit = { course ->
-                showEditCourseDialog(course)
+                if (userRole == "teacher") showEditCourseDialog(course)
+                else showSnackbar("Только учителя могут редактировать курсы")
             },
             onCourseDelete = { course ->
-                showDeleteConfirmation(course)
+                if (userRole == "teacher") showDeleteConfirmation(course)
+                else showSnackbar("Только учителя могут удалять курсы")
             }
         )
 
@@ -90,7 +110,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Collect StateFlow for posts
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.postsState.collect { state ->
@@ -128,9 +147,34 @@ class MainActivity : AppCompatActivity() {
         binding.btnRefresh.setOnClickListener {
             viewModel.fetchPosts()
         }
+        
+        // Кнопка Аккаунта (Силуэт человека)
+        binding.btnAccount.setOnClickListener {
+            showAccountDialog()
+        }
+    }
+
+    private fun showAccountDialog() {
+        val email = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.email ?: "Неизвестно"
+        val roleDisplay = if (userRole == "teacher") "Учитель" else "Ученик"
+        
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Ваш профиль")
+            .setMessage("Email: $email\nРоль: $roleDisplay")
+            .setPositiveButton("Выйти") { _, _ ->
+                authViewModel.logout()
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            }
+            .setNegativeButton("Закрыть", null)
+            .show()
     }
 
     private fun showAddCourseDialog() {
+        if (userRole != "teacher") return
+        
         val dialogBinding = DialogAddCourseBinding.inflate(layoutInflater)
 
         MaterialAlertDialogBuilder(this)
@@ -201,19 +245,20 @@ class MainActivity : AppCompatActivity() {
             Цена: ${course.price.toInt()} ₸
             Рейтинг: ${course.rating}
             Студентов: ${course.studentsCount}
-            
-            ID в БД: ${course.id}
-            Создан: ${java.text.SimpleDateFormat("dd.MM.yyyy HH:mm", java.util.Locale.getDefault()).format(course.createdAt)}
         """.trimIndent()
 
         MaterialAlertDialogBuilder(this)
             .setTitle(course.title)
             .setMessage(message)
-            .setPositiveButton(R.string.enroll) { _, _ ->
-                viewModel.enrollToCourse(course.id, course.studentsCount, course.rating)
-                showSnackbar(getString(R.string.enrolled_success))
+            .setPositiveButton(if (userRole == "student") R.string.enroll else R.string.close) { _, _ ->
+                if (userRole == "student") {
+                    viewModel.enrollToCourse(course.id, course.studentsCount, course.rating)
+                    showSnackbar(getString(R.string.enrolled_success))
+                }
             }
-            .setNegativeButton(R.string.close, null)
+            .apply {
+                if (userRole == "student") setNegativeButton(R.string.close, null)
+            }
             .show()
     }
 

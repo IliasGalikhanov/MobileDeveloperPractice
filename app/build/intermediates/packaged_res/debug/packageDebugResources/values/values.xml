@@ -24,6 +24,12 @@
     <string name="enroll">Записаться</string>
     <string name="enrolled_success">Вы записались! Данные сохранены в БД</string>
     <string name="error_empty_title">Введите название</string>
+    <string name="gcm_defaultSenderId" translatable="false">754821584714</string>
+    <string name="google_api_key" translatable="false">AIzaSyAfazU0hjmjI3z1ySJtqe_C6-CO33ZmZKs</string>
+    <string name="google_app_id" translatable="false">1:754821584714:android:bb2c0dfeee2812463ad3b3</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAfazU0hjmjI3z1ySJtqe_C6-CO33ZmZKs</string>
+    <string name="google_storage_bucket" translatable="false">coursedatabase-24c21.firebasestorage.app</string>
+    <string name="project_id" translatable="false">coursedatabase-24c21</string>
     <string name="save">Сохранить</string>
     <style name="Base.Theme.CourseDatabase" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
