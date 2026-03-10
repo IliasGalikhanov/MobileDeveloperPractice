@@ -3190,6 +3190,7 @@ int id bounceEnd 0x7f080060
 int id bounceStart 0x7f080061
 int id btnDelete 0x7f080062
 int id btnEdit 0x7f080063
+int id btnRetry 0x7f080216
 int id buttonPanel 0x7f080064
 int id cache_measures 0x7f080065
 int id callMeasure 0x7f080066
@@ -3336,6 +3337,7 @@ int id jumpToStart 0x7f0800f2
 int id labeled 0x7f0800f3
 int id layout 0x7f0800f4
 int id layoutEmpty 0x7f0800f5
+int id layoutError 0x7f080217
 int id layoutInfo 0x7f0800f6
 int id layoutPrice 0x7f0800f7
 int id left 0x7f0800f8
@@ -3460,6 +3462,7 @@ int id pooling_container_listener_holder_tag 0x7f08016e
 int id position 0x7f08016f
 int id postLayout 0x7f080170
 int id pressed 0x7f080171
+int id progressBar 0x7f080218
 int id progress_circular 0x7f080172
 int id progress_horizontal 0x7f080173
 int id radio 0x7f080174
@@ -3475,6 +3478,7 @@ int id right_icon 0x7f08017d
 int id right_side 0x7f08017e
 int id rounded 0x7f08017f
 int id row_index_key 0x7f080180
+int id rvPosts 0x7f080219
 int id save_non_transition_alpha 0x7f080181
 int id save_overlay_view 0x7f080182
 int id sawtooth 0x7f080183
@@ -3595,12 +3599,17 @@ int id tvCourseDescription 0x7f0801f5
 int id tvCourseId 0x7f0801f6
 int id tvCourseTitle 0x7f0801f7
 int id tvCoursesCount 0x7f0801f8
+int id tvCoursesHeader 0x7f08021a
 int id tvDuration 0x7f0801f9
+int id tvErrorMessage 0x7f08021b
 int id tvInstructor 0x7f0801fa
+int id tvPostsHeader 0x7f08021c
 int id tvPrice 0x7f0801fb
 int id tvRating 0x7f0801fc
 int id tvStudents 0x7f0801fd
 int id tvTotalStudents 0x7f0801fe
+int id tv_post_body 0x7f08021d
+int id tv_post_title 0x7f08021e
 int id unchecked 0x7f0801ff
 int id uniform 0x7f080200
 int id unlabeled 0x7f080201
@@ -3759,6 +3768,7 @@ int layout dialog_add_course 0x7f0b002d
 int layout ime_base_split_test_activity 0x7f0b002e
 int layout ime_secondary_split_test_activity 0x7f0b002f
 int layout item_course 0x7f0b0030
+int layout item_post 0x7f0b006e
 int layout m3_alert_dialog 0x7f0b0031
 int layout m3_alert_dialog_actions 0x7f0b0032
 int layout m3_alert_dialog_title 0x7f0b0033

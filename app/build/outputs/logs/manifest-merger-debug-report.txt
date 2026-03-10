@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-23:12
-INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-23:12
-INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-23:12
-INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-23:12
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-25:12
+INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-25:12
+INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-25:12
+INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:1-25:12
 MERGED from [androidx.databinding:viewbinding:8.7.2] C:\Users\starl\.gradle\caches\8.10.2\transforms\d47b91c1384304142a1125f446ce75ad\transformed\jetified-viewbinding-8.7.2\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\starl\.gradle\caches\8.10.2\transforms\4a52ed826d56db0c4a082e1137437514\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\starl\.gradle\caches\8.10.2\transforms\fea6e3df66842e1ee8086295c3420e16\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
@@ -66,9 +66,13 @@ MERGED from [androidx.print:print:1.0.0] C:\Users\starl\.gradle\caches\8.10.2\tr
 		INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:4:5-67
+	android:name
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:4:22-64
 application
-ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:4:5-21:19
-INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:4:5-21:19
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:6:5-23:19
+INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:6:5-23:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\starl\.gradle\caches\8.10.2\transforms\4a52ed826d56db0c4a082e1137437514\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\starl\.gradle\caches\8.10.2\transforms\4a52ed826d56db0c4a082e1137437514\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\starl\.gradle\caches\8.10.2\transforms\fea6e3df66842e1ee8086295c3420e16\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -92,33 +96,33 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\starl\.gradle\cach
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] C:\Users\starl\.gradle\caches\8.10.2\transforms\7f22cfdfe034911625a510b60fedcf83\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:9:9-35
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:11:9-35
 	android:label
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:7:9-41
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:9:9-41
 	android:roundIcon
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:8:9-54
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:10:9-54
 	android:icon
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:6:9-43
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:8:9-43
 	android:allowBackup
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:5:9-35
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:7:9-35
 	android:theme
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:10:9-52
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:12:9-52
 activity#com.example.coursedatabase.MainActivity
-ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:12:9-19:20
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:14:9-21:20
 	android:exported
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:14:13-36
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:16:13-36
 	android:name
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:13:13-41
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:15:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:15:13-18:29
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:17:13-20:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:16:17-69
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:18:17-69
 	android:name
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:16:25-66
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:18:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:17:17-77
+ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:19:17-77
 	android:name
-		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:17:27-74
+		ADDED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml:19:27-74
 uses-sdk
 INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\starl\AndroidStudioProjects\Dice-roller\app\src\main\AndroidManifest.xml
