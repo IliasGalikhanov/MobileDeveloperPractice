@@ -3,18 +3,22 @@ package com.example.coursedatabase.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.coursedatabase.data.dto.PostDto
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.repository.CourseRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
 
-    val allCourses: LiveData<List<Course>> = repository.allCourses
+    val allCourses: LiveData<List<Course>> = repository.allCourses.asLiveData()
 
-    private val _postsState = MutableLiveData<UiState<List<PostDto>>>()
-    val postsState: LiveData<UiState<List<PostDto>>> = _postsState
+    private val _postsState = MutableStateFlow<UiState<List<PostDto>>>(UiState.Loading)
+    val postsState: StateFlow<UiState<List<PostDto>>> = _postsState.asStateFlow()
 
     private val _statistics = MutableLiveData<Statistics>()
     val statistics: LiveData<Statistics> = _statistics
@@ -30,11 +34,11 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
     fun fetchPosts() {
         viewModelScope.launch {
             _postsState.value = UiState.Loading
-            val result = repository.fetchPosts()
-            result.onSuccess { posts ->
+            try {
+                val posts = repository.fetchPosts()
                 _postsState.value = UiState.Success(posts)
-            }.onFailure { error ->
-                _postsState.value = UiState.Error(error.message ?: "Неизвестная ошибка")
+            } catch (e: Exception) {
+                _postsState.value = UiState.Error(e.message ?: "Неизвестная ошибка")
             }
         }
     }
@@ -63,19 +67,19 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
     }
 
     fun searchCourses(query: String): LiveData<List<Course>> {
-        return repository.searchCourses(query)
+        return repository.searchCourses(query).asLiveData()
     }
 
     fun filterByRating(minRating: Float): LiveData<List<Course>> {
-        return repository.getCoursesByRating(minRating)
+        return repository.getCoursesByRating(minRating).asLiveData()
     }
 
     fun filterByPrice(minPrice: Double, maxPrice: Double): LiveData<List<Course>> {
-        return repository.getCoursesByPriceRange(minPrice, maxPrice)
+        return repository.getCoursesByPriceRange(minPrice, maxPrice).asLiveData()
     }
 
     fun getTopCourses(limit: Int = 5): LiveData<List<Course>> {
-        return repository.getTopCourses(limit)
+        return repository.getTopCourses(limit).asLiveData()
     }
 
     fun update(course: Course) {

@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coursedatabase.adapter.CourseAdapter
 import com.example.coursedatabase.adapter.PostAdapter
@@ -16,6 +19,7 @@ import com.example.coursedatabase.viewmodel.CourseViewModelFactory
 import com.example.coursedatabase.viewmodel.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -86,24 +90,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.postsState.observe(this) { state ->
-            when (state) {
-                is UiState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.rvPosts.visibility = View.GONE
-                    binding.layoutError.visibility = View.GONE
-                }
-                is UiState.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvPosts.visibility = View.VISIBLE
-                    binding.layoutError.visibility = View.GONE
-                    postAdapter.submitList(state.data)
-                }
-                is UiState.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvPosts.visibility = View.GONE
-                    binding.layoutError.visibility = View.VISIBLE
-                    binding.tvErrorMessage.text = state.message
+        // Collect StateFlow for posts
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.postsState.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.rvPosts.visibility = View.GONE
+                            binding.layoutError.visibility = View.GONE
+                        }
+                        is UiState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvPosts.visibility = View.VISIBLE
+                            binding.layoutError.visibility = View.GONE
+                            postAdapter.submitList(state.data)
+                        }
+                        is UiState.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvPosts.visibility = View.GONE
+                            binding.layoutError.visibility = View.VISIBLE
+                            binding.tvErrorMessage.text = state.message
+                        }
+                    }
                 }
             }
         }

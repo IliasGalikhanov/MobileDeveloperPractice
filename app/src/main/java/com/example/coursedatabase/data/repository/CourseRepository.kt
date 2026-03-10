@@ -1,27 +1,21 @@
 package com.example.coursedatabase.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import com.example.coursedatabase.data.dao.CourseDao
 import com.example.coursedatabase.data.dto.PostDto
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.network.ApiService
+import kotlinx.coroutines.flow.Flow
 
 class CourseRepository(
     private val courseDao: CourseDao,
     private val apiService: ApiService
 ) {
 
-    val allCourses: LiveData<List<Course>> = courseDao.getAllCourses()
+    val allCourses: Flow<List<Course>> = courseDao.getAllCourses()
 
-    suspend fun fetchPosts(): Result<List<PostDto>> {
-        return try {
-            val posts = apiService.getPosts()
-            Result.success(posts)
-        } catch (e: Exception) {
-            Log.e("CourseRepository", "Error fetching posts", e)
-            Result.failure(e)
-        }
+    suspend fun fetchPosts(): List<PostDto> {
+        return apiService.getPosts()
     }
 
     suspend fun insert(course: Course): Long {
@@ -39,17 +33,17 @@ class CourseRepository(
         return courseDao.getCourseById(id)
     }
 
-    fun searchCourses(query: String): LiveData<List<Course>> {
+    fun searchCourses(query: String): Flow<List<Course>> {
         Log.d("CourseRepository", "Searching courses with query: $query")
         return courseDao.searchCourses(query)
     }
 
-    fun getCoursesByRating(minRating: Float): LiveData<List<Course>> {
+    fun getCoursesByRating(minRating: Float): Flow<List<Course>> {
         Log.d("CourseRepository", "Getting courses by rating: $minRating")
         return courseDao.getCoursesByRating(minRating)
     }
 
-    fun getCoursesByPriceRange(minPrice: Double, maxPrice: Double): LiveData<List<Course>> {
+    fun getCoursesByPriceRange(minPrice: Double, maxPrice: Double): Flow<List<Course>> {
         Log.d("CourseRepository", "Getting courses by price range: $minPrice - $maxPrice")
         return courseDao.getCoursesByPriceRange(minPrice, maxPrice)
     }
@@ -81,7 +75,7 @@ class CourseRepository(
 
     suspend fun deleteById(courseId: Long): Int {
         Log.d("CourseRepository", "Deleting course by id: $courseId")
-        return courseDao.deleteById(courseId)
+        courseDao.deleteById(courseId)
     }
 
     suspend fun deleteAll() {
@@ -89,7 +83,7 @@ class CourseRepository(
         courseDao.deleteAll()
     }
 
-    fun getTopCourses(limit: Int = 5): LiveData<List<Course>> {
+    fun getTopCourses(limit: Int = 5): Flow<List<Course>> {
         Log.d("CourseRepository", "Getting top courses")
         return courseDao.getTopCourses(limit)
     }

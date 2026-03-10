@@ -1,8 +1,8 @@
 package com.example.coursedatabase.data.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.coursedatabase.data.entity.Course
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourseDao {
@@ -14,19 +14,19 @@ interface CourseDao {
     suspend fun insertAll(courses: List<Course>)
     
     @Query("SELECT * FROM courses ORDER BY created_at DESC")
-    fun getAllCourses(): LiveData<List<Course>>
+    fun getAllCourses(): Flow<List<Course>>
     
     @Query("SELECT * FROM courses WHERE id = :id")
     suspend fun getCourseById(id: Long): Course?
     
     @Query("SELECT * FROM courses WHERE title LIKE '%' || :query || '%'")
-    fun searchCourses(query: String): LiveData<List<Course>>
+    fun searchCourses(query: String): Flow<List<Course>>
     
     @Query("SELECT * FROM courses WHERE rating >= :minRating ORDER BY rating DESC")
-    fun getCoursesByRating(minRating: Float): LiveData<List<Course>>
+    fun getCoursesByRating(minRating: Float): Flow<List<Course>>
     
     @Query("SELECT * FROM courses WHERE price BETWEEN :minPrice AND :maxPrice ORDER BY price ASC")
-    fun getCoursesByPriceRange(minPrice: Double, maxPrice: Double): LiveData<List<Course>>
+    fun getCoursesByPriceRange(minPrice: Double, maxPrice: Double): Flow<List<Course>>
     
     @Query("SELECT COUNT(*) FROM courses")
     suspend fun getCoursesCount(): Int
@@ -50,7 +50,7 @@ interface CourseDao {
     suspend fun deleteAll()
     
     @Query("SELECT * FROM courses ORDER BY students_count DESC LIMIT :limit")
-    fun getTopCourses(limit: Int = 5): LiveData<List<Course>>
+    fun getTopCourses(limit: Int = 5): Flow<List<Course>>
     
     @Query("SELECT AVG(price) FROM courses")
     suspend fun getAveragePrice(): Double?
