@@ -19,6 +19,7 @@ drawable ic_people
 drawable ic_time
 id btnDelete
 id btnEdit
+id btnRefresh
 id btnRetry
 id cardStatistics
 id divider

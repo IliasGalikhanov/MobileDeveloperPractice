@@ -12,6 +12,10 @@
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\drawable\\ic_time.xml"
     },
     {
+        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\layout_item_post.xml.flat",
+        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\item_post.xml"
+    },
+    {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\mipmap-mdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\mipmap-mdpi\\ic_launcher_round.webp"
     },
@@ -60,12 +64,12 @@
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\xml\\data_extraction_rules.xml"
     },
     {
-        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\drawable_ic_add.xml.flat",
-        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\drawable\\ic_add.xml"
-    },
-    {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\drawable_ic_launcher_background.xml.flat",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\drawable_ic_add.xml.flat",
+        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\drawable\\ic_add.xml"
     },
     {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
@@ -90,10 +94,6 @@
     {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\drawable_ic_edit.xml.flat",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\drawable\\ic_edit.xml"
-    },
-    {
-        "merged": "com.example.coursedatabase.app-debug-43:/layout_item_post.xml.flat",
-        "source": "com.example.coursedatabase.app-main-45:/layout/item_post.xml"
     },
     {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-debug-43:\\mipmap-hdpi_ic_launcher.webp.flat",

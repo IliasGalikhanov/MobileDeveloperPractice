@@ -3191,6 +3191,7 @@ id bounceEnd
 id bounceStart
 id btnDelete
 id btnEdit
+id btnRefresh
 id btnRetry
 id buttonPanel
 id cache_measures

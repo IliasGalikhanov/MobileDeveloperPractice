@@ -125,6 +125,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnRetry.setOnClickListener {
             viewModel.fetchPosts()
         }
+        binding.btnRefresh.setOnClickListener {
+            viewModel.fetchPosts()
+        }
     }
 
     private fun showAddCourseDialog() {

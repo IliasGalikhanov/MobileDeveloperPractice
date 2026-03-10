@@ -1,9 +1,5 @@
 [
     {
-        "merged": "com.example.coursedatabase.app-mergeDebugResources-42:/layout/item_post.xml",
-        "source": "com.example.coursedatabase.app-main-45:/layout/item_post.xml"
-    },
-    {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-mergeDebugResources-42:\\layout\\activity_main.xml",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\activity_main.xml"
     },
@@ -18,5 +14,9 @@
     {
         "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-mergeDebugResources-42:\\layout\\dialog_add_course.xml",
         "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\dialog_add_course.xml"
+    },
+    {
+        "merged": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-mergeDebugResources-42:\\layout\\item_post.xml",
+        "source": "C:\\Users\\starl\\.gradle\\daemon\\8.10.2\\com.example.coursedatabase.app-main-45:\\layout\\item_post.xml"
     }
 ]

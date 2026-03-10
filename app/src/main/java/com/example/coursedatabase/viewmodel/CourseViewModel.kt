@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.coursedatabase.data.dto.PostDto
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.repository.CourseRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +35,8 @@ class CourseViewModel(private val repository: CourseRepository) : ViewModel() {
     fun fetchPosts() {
         viewModelScope.launch {
             _postsState.value = UiState.Loading
+            // Добавляем небольшую задержку, чтобы успеть увидеть ProgressBar (для демонстрации учителю)
+            delay(1000)
             try {
                 val posts = repository.fetchPosts()
                 _postsState.value = UiState.Success(posts)
