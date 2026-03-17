@@ -24,7 +24,6 @@ id btnEdit
 id btnLogin
 id btnRefresh
 id btnRegister
-id btnRetry
 id cardStatistics
 id divider
 id etDescription
@@ -38,7 +37,6 @@ id etStudents
 id etTitle
 id fabAddCourse
 id layoutEmpty
-id layoutError
 id layoutInfo
 id layoutPrice
 id progressBar
@@ -47,7 +45,6 @@ id rbStudent
 id rbTeacher
 id recyclerView
 id rgRole
-id rvPosts
 id tilDescription
 id tilDuration
 id tilInstructor
@@ -63,11 +60,9 @@ id tvCourseTitle
 id tvCoursesCount
 id tvCoursesHeader
 id tvDuration
-id tvErrorMessage
 id tvGoToLogin
 id tvGoToRegister
 id tvInstructor
-id tvPostsHeader
 id tvPrice
 id tvRating
 id tvStudents

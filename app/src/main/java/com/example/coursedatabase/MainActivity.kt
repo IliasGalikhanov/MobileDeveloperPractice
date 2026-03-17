@@ -5,12 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coursedatabase.adapter.CourseAdapter
-import com.example.coursedatabase.adapter.PostAdapter
 import com.example.coursedatabase.data.entity.Course
 import com.example.coursedatabase.data.network.RetrofitProvider
 import com.example.coursedatabase.databinding.ActivityMainBinding
@@ -18,10 +14,8 @@ import com.example.coursedatabase.databinding.DialogAddCourseBinding
 import com.example.coursedatabase.viewmodel.AuthViewModel
 import com.example.coursedatabase.viewmodel.CourseViewModel
 import com.example.coursedatabase.viewmodel.CourseViewModelFactory
-import com.example.coursedatabase.viewmodel.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private val authViewModel: AuthViewModel by viewModels()
     
     private lateinit var courseAdapter: CourseAdapter
-    private lateinit var postAdapter: PostAdapter
     private var userRole: String = "student"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +48,11 @@ class MainActivity : AppCompatActivity() {
         if (userRole == "teacher") {
             binding.fabAddCourse.visibility = View.VISIBLE
             binding.toolbar.title = "Панель Учителя"
+            binding.tvCoursesHeader.text = "📚 Все курсы (Firestore/Room)"
         } else {
             binding.fabAddCourse.visibility = View.GONE
             binding.toolbar.title = "Панель Ученика"
+            binding.tvCoursesHeader.text = "📚 Доступные курсы (Firestore)"
         }
     }
 
@@ -79,13 +74,6 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = courseAdapter
-            setHasFixedSize(true)
-        }
-
-        postAdapter = PostAdapter()
-        binding.rvPosts.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = postAdapter
             setHasFixedSize(true)
         }
     }
@@ -110,29 +98,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.postsState.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.progressBar.visibility = View.VISIBLE
-                            binding.rvPosts.visibility = View.GONE
-                            binding.layoutError.visibility = View.GONE
-                        }
-                        is UiState.Success -> {
-                            binding.progressBar.visibility = View.GONE
-                            binding.rvPosts.visibility = View.VISIBLE
-                            binding.layoutError.visibility = View.GONE
-                            postAdapter.submitList(state.data)
-                        }
-                        is UiState.Error -> {
-                            binding.progressBar.visibility = View.GONE
-                            binding.rvPosts.visibility = View.GONE
-                            binding.layoutError.visibility = View.VISIBLE
-                            binding.tvErrorMessage.text = state.message
-                        }
-                    }
-                }
+        viewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.btnRefresh.isEnabled = false
+            } else {
+                binding.btnRefresh.isEnabled = true
             }
         }
     }
@@ -141,14 +111,11 @@ class MainActivity : AppCompatActivity() {
         binding.fabAddCourse.setOnClickListener {
             showAddCourseDialog()
         }
-        binding.btnRetry.setOnClickListener {
-            viewModel.fetchPosts()
-        }
         binding.btnRefresh.setOnClickListener {
-            viewModel.fetchPosts()
+            viewModel.fetchCoursesFromFirestore()
+            showSnackbar("Обновление данных...")
         }
         
-        // Кнопка Аккаунта (Силуэт человека)
         binding.btnAccount.setOnClickListener {
             showAccountDialog()
         }
@@ -183,15 +150,8 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(R.string.save) { _, _ ->
                 val course = createCourseFromDialog(dialogBinding)
                 if (course != null) {
-                    viewModel.insertWithValidation(
-                        course,
-                        onSuccess = { id ->
-                            showSnackbar("${getString(R.string.course_added)} (ID: $id)")
-                        },
-                        onError = { error ->
-                            showSnackbar(error)
-                        }
-                    )
+                    viewModel.insert(course)
+                    showSnackbar(getString(R.string.course_added))
                 }
             }
             .setNegativeButton(R.string.cancel, null)
@@ -215,7 +175,8 @@ class MainActivity : AppCompatActivity() {
             .setTitle(R.string.edit_course)
             .setView(dialogBinding.root)
             .setPositiveButton(R.string.save) { _, _ ->
-                val updatedCourse = createCourseFromDialog(dialogBinding, course.id)
+                // ПЕРЕДАЕМ ОБЪЕКТ course целиком, чтобы сохранить firestoreId
+                val updatedCourse = createCourseFromDialog(dialogBinding, course)
                 if (updatedCourse != null) {
                     viewModel.update(updatedCourse)
                     showSnackbar(getString(R.string.course_updated))
@@ -264,7 +225,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun createCourseFromDialog(
         binding: DialogAddCourseBinding,
-        existingId: Long = 0L
+        existingCourse: Course? = null
     ): Course? {
         val title = binding.etTitle.text.toString().trim()
         val description = binding.etDescription.text.toString().trim()
@@ -284,14 +245,16 @@ class MainActivity : AppCompatActivity() {
         val students = studentsStr.toIntOrNull() ?: 0
 
         return Course(
-            id = existingId,
+            id = existingCourse?.id ?: 0L,
             title = title,
             description = description.ifEmpty { "Описание отсутствует" },
             instructor = instructor.ifEmpty { "Не указан" },
             duration = duration.ifEmpty { "Не указана" },
             price = price,
             rating = rating.coerceIn(0f, 5f),
-            studentsCount = students
+            studentsCount = students,
+            createdAt = existingCourse?.createdAt ?: System.currentTimeMillis(),
+            firestoreId = existingCourse?.firestoreId // Передаем ID из Firestore!
         )
     }
 

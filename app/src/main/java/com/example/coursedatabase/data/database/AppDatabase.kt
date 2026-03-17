@@ -39,27 +39,7 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 "course_database"
             )
-                .addCallback(DatabaseCallback())
                 .build()
-        }
-        
-        private class DatabaseCallback : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                
-                INSTANCE?.let { database ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        populateDatabase(database.courseDao())
-                    }
-                }
-            }
-            
-            suspend fun populateDatabase(courseDao: CourseDao) {
-                val sampleCourses = Course.getSampleCourses()
-                courseDao.insertAll(sampleCourses)
-                
-                println("AppDatabase: База данных заполнена ${sampleCourses.size} курсами")
-            }
         }
         
         fun destroyInstance() {

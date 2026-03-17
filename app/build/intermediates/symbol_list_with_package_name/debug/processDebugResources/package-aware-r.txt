@@ -3247,7 +3247,6 @@ id btnEdit
 id btnLogin
 id btnRefresh
 id btnRegister
-id btnRetry
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3398,7 +3397,6 @@ id jumpToStart
 id labeled
 id layout
 id layoutEmpty
-id layoutError
 id layoutInfo
 id layoutPrice
 id left
@@ -3543,7 +3541,6 @@ id right_icon
 id right_side
 id rounded
 id row_index_key
-id rvPosts
 id save_non_transition_alpha
 id save_overlay_view
 id sawtooth
@@ -3666,11 +3663,9 @@ id tvCourseTitle
 id tvCoursesCount
 id tvCoursesHeader
 id tvDuration
-id tvErrorMessage
 id tvGoToLogin
 id tvGoToRegister
 id tvInstructor
-id tvPostsHeader
 id tvPrice
 id tvRating
 id tvStudents
